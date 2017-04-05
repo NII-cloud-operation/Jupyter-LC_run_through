@@ -1,0 +1,58 @@
+.run-through .btn {
+    padding: 2px 4px;
+    font-size: 120%;
+}
+
+.run-through {
+    display: block;
+    width: inherit;
+    border: 1px solid #cccccc;
+    border-radius: 2px 2px;
+    padding: 3px 10px 3px 10px;
+}
+
+.run-through .heading-result {
+    font-size: 100%;
+    margin: 5px 5px 5px 5px;
+    font-weight: bold;
+    font-family: Meiryo, sans-serif;
+    line-height: 1.2em;
+    height: 1.2em;
+    text-align: center;
+    float: left;
+    clear: both;
+}
+
+.run-through .text-result {
+    display: none;
+}
+
+.run-through .code-result {
+    font-size: 100%;
+    margin: 5px 5px 5px 5px;
+    color: #000;
+    line-height: 1.2em;
+    border-radius: 3px 3px;
+    width: 1.2em;
+    height: 1.2em;
+    text-align: center;
+    float: left;
+    background: #cccccc;
+}
+
+.run-through .code-success {
+    background: #88ff88;
+}
+
+.run-through .code-error {
+    background: #ff8888;
+}
+
+.fa-unlock-below-all:before {
+    content: "\f13e\00a0\f04e";
+}
+
+.fa-unlock-below-in-section:before {
+    content: "\f13e\00a0\f050"
+}
+

@@ -1,0 +1,8 @@
+Type: Jupyter Notebook Extension
+Name: LC run through
+Section: notebook
+Description: "Run through extension for Literate Computing"
+Link: README.md
+Icon: icon.png
+Main: main.js
+Compatibility: 4.x
