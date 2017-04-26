@@ -7,7 +7,8 @@ define([
     'notebook/js/textcell',
     'notebook/js/codecell',
     'nbextensions/collapsible_headings/main',
-], function($, require, Jupyter, events, configmod, textcell, codecell, ch) {
+    'nbextensions/freeze/main',
+], function($, require, Jupyter, events, configmod, textcell, codecell, ch, freeze) {
     'use strict';
 
     var cells_status = {};
@@ -309,41 +310,21 @@ define([
     }
 
     function is_frozen(cell) {
-        return cell.metadata.run_control !== undefined && cell.metadata.run_control.frozen;
+        return freeze.get_state(cell) === 'frozen';
     }
 
     function freeze_cell(cell) {
         if (!(cell instanceof codecell.CodeCell)) {
             return;
         }
-
-        if (cell.metadata.run_control === undefined) {
-            cell.metadata.run_control = {};
-        }
-
-        $.extend(cell.metadata.run_control, {
-            read_only: true,
-            frozen: true
-        });
-        cell.code_mirror.setOption('readOnly', true);
-        var prompt = cell.element.find('div.input_area');
-        prompt.css("background-color", "#cccccc");
+        freeze.set_state(cell, 'frozen');
     }
 
     function unfreeze_cell(cell) {
         if (!(cell instanceof codecell.CodeCell)) {
             return;
         }
-        if (cell.metadata.run_control === undefined) {
-            return;
-        }
-        $.extend(cell.metadata.run_control, {
-            read_only: false,
-            frozen: false
-        });
-        cell.code_mirror.setOption('readOnly', false);
-        var prompt = cell.element.find('div.input_area');
-        prompt.css("background-color", "");
+        freeze.set_state(cell, 'normal');
 
         var results = result_views[cell.cell_id];
         if (results) {
