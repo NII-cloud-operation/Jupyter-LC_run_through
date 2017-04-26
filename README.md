@@ -7,7 +7,7 @@ Successfully executed cells are frozen automatically to prevent to re-run.
 
 # Prerequisite
 
-* [Jupyter Notebook](https://github.com/jupyter/notebook) 4.2.x
+* [Jupyter Notebook](https://github.com/jupyter/notebook) 4.2.x or 5.x
 * [Collapsible Headings extension](https://github.com/ipython-contrib/jupyter_contrib_nbextensions/tree/master/src/jupyter_contrib_nbextensions/nbextensions/collapsible_headings) is installed and enabled
 * [Freeze extension](https://github.com/ipython-contrib/jupyter_contrib_nbextensions/tree/master/src/jupyter_contrib_nbextensions/nbextensions/freeze) is installed and enabled
 

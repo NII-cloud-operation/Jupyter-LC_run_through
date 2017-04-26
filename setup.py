@@ -14,10 +14,10 @@ setup_args = dict (name='lc-run-through',
       description='LC run through extension for Jupyter Notebook',
       packages=['lc_run_through'],
       include_package_data=True,
-      platforms=['Jupyter Notebook 4.2.x'],
+      platforms=['Jupyter Notebook 4.2.x', 'Jupyter Notebook 5.x'],
       zip_safe=False,
       install_requires=[
-          'notebook>=4.2.0,<5.0',
+          'notebook>=4.2.0',
       ],
       entry_points={
           'console_scripts': [

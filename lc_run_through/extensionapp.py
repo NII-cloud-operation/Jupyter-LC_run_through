@@ -7,13 +7,18 @@ from ._version import __version__
 from notebook.nbextensions import (InstallNBExtensionApp, EnableNBExtensionApp,
     DisableNBExtensionApp)
 
-from notebook.nbextensions import BaseNBExtensionApp
+try:
+    from notebook.extensions import BaseExtensionApp
+except ImportError:
+    from notebook.nbextensions import BaseNBExtensionApp
+    BaseExtensionApp = BaseNBExtensionApp
+
 from notebook import nbextensions
 
 from traitlets.config.application import catch_config_error
 from traitlets.config.application import Application
 
-class ExtensionQuickSetupApp(BaseNBExtensionApp):
+class ExtensionQuickSetupApp(BaseExtensionApp):
     """Installs and enables all parts of this extension"""
     name = "jupyter run-through quick-setup"
     version = __version__
@@ -44,7 +49,7 @@ class ExtensionQuickSetupApp(BaseNBExtensionApp):
         enable.start();
 
 
-class ExtensionQuickRemovalApp(BaseNBExtensionApp):
+class ExtensionQuickRemovalApp(BaseExtensionApp):
     """Disables and uninstalls all parts of this extension"""
     name = "jupyter run-through quick-remove"
     version = __version__
