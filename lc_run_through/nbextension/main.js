@@ -7,13 +7,21 @@ define([
     'notebook/js/textcell',
     'notebook/js/codecell',
     'nbextensions/collapsible_headings/main',
-    'nbextensions/freeze/main',
 ], function($, require, Jupyter, events, configmod, textcell, codecell, ch, freeze) {
     'use strict';
+
+    var mod_name = 'RunThrough';
+    var log_prefix = '[' + mod_name + ']';
 
     var cells_status = {};
     var result_views = {};
     var execute_status = Array();
+
+    // defaults, overridden by server's config
+    var options = {
+        readonly_color: '#fffef0',
+        frozen_color: '#f0feff'
+    };
 
     function init_events() {
         events.on('create.Cell', function (e, data) {
@@ -23,6 +31,33 @@ define([
         events.on('delete.Cell', function (e, data) {
             cell_deleted(data.cell);
         });
+    }
+
+    function patch_MarkdownCell_unrender () {
+        console.log('[run_through] patching MarkdownCell.prototype.unrender');
+        var old_unrender = textcell.MarkdownCell.prototype.unrender;
+
+        textcell.MarkdownCell.prototype.unrender = function () {
+            // console.log('[Freeze] patched unrender applied');
+            if (this.metadata.run_through_control === undefined ||
+                !this.metadata.run_through_control.frozen
+            ) {
+                old_unrender.apply(this, arguments);
+            }
+        };
+    }
+
+    function patch_CodeCell_execute () {
+        console.log('[run_through] patching CodeCell.prototype.execute');
+        var old_execute = codecell.CodeCell.prototype.execute;
+
+        codecell.CodeCell.prototype.execute = function () {
+            if (this.metadata.run_through_control === undefined ||
+                !this.metadata.run_through_control.frozen
+            ) {
+                old_execute.apply(this, arguments);
+            }
+        };
     }
 
     function patch_CodeCell_get_callbacks() {
@@ -62,10 +97,118 @@ define([
         }
     }
 
+    // Migrate old metadata format to new notebook-defined metadata.editable
+    function migrate_state (cell) {
+        if (cell.metadata.run_through_control !== undefined) {
+            if (cell instanceof codecell.CodeCell ||
+                cell instanceof textcell.MarkdownCell) {
+                if (cell.metadata.run_through_control.read_only === true) {
+                    cell.metadata.editable = false;
+                }
+            }
+            else {
+                // remove metadata irrelevant to non-code/markdown cells
+                delete cell.metadata.run_through_control.frozen;
+                delete cell.metadata.run_through_control.read_only;
+            }
+            // remove whole object if it's now empty
+            if (Object.keys(cell.metadata.run_through_control).length === 0) {
+                delete cell.metadata.run_through_control;
+            }
+        }
+    }
+
+    function get_state (cell) {
+        if ((cell instanceof codecell.CodeCell || cell instanceof textcell.MarkdownCell) &&
+            (cell.metadata.run_through_control !== undefined)) {
+            return {frozen: cell.metadata.run_through_control.frozen === true ? true : false,
+                    read_only: cell.metadata.run_through_control.read_only === true ? true : false};
+        }
+        return {frozen: false, read_only: false};
+    }
+
+    function set_state(cell, state) {
+        if (!(cell instanceof codecell.CodeCell ||
+              cell instanceof textcell.MarkdownCell)) {
+            return;
+        }
+
+        var bg;
+        if (state.frozen !== undefined) {
+            if (cell.metadata.run_through_control !== undefined) {
+                cell.metadata.run_through_control.frozen = state.frozen;
+            }else{
+                cell.metadata.run_through_control = {frozen: state.frozen};
+            }
+        } else if (cell.metadata.run_through_control !== undefined &&
+                   cell.metadata.run_through_control.frozen !== undefined) {
+            state.frozen = cell.metadata.run_through_control.frozen;
+        } else {
+            state.frozen = false;
+        }
+
+        if (state.read_only !== undefined) {
+            if (cell.metadata.run_through_control !== undefined) {
+                cell.metadata.run_through_control.read_only = state.read_only;
+            }else{
+                cell.metadata.run_through_control = {read_only: state.read_only};
+            }
+        } else if (cell.metadata.run_through_control !== undefined &&
+                   cell.metadata.run_through_control.read_only !== undefined) {
+            state.read_only = cell.metadata.run_through_control.read_only;
+        } else {
+            state.read_only = false;
+        }
+
+        if (! state.frozen && ! state.read_only) {
+            // normal cell
+            cell.metadata.editable = true;
+            cell.metadata.deletable = true;
+            if (cell.metadata.run_through_control !== undefined) {
+                delete cell.metadata.run_through_control.frozen;
+                delete cell.metadata.run_through_control.read_only;
+            }
+            bg = "";
+        } else if (state.frozen) {
+            cell.metadata.editable = false;
+            cell.metadata.deletable = false;
+            bg = options.frozen_color;
+        } else {
+            cell.metadata.editable = false;
+            cell.metadata.deletable = false;
+            bg = options.readonly_color;
+        }
+        // remove whole object if it's now empty
+        if (cell.metadata.run_through_control !== undefined && Object.keys(cell.metadata.run_through_control).length === 0) {
+            delete cell.metadata.run_through_control;
+        }
+        cell.code_mirror.setOption('readOnly', !cell.metadata.editable);
+        var prompt = cell.element.find('div.input_area');
+        prompt.css("background-color", bg);
+    }
+
+    function set_state_selected (state) {
+        var cells = Jupyter.notebook.get_selected_cells();
+        for (var i = 0; i < cells.length; i++) {
+            set_state(cells[i], state);
+        }
+    }
+
+    function button_callback(state) {
+        set_state_selected(state);
+        var dirty_state = {value: true};
+        events.trigger("set_dirty.Notebook", dirty_state);
+    }
+
     function init_cell_states() {
         var cells = Jupyter.notebook.get_cells();
         for (var i=0; i<cells.length; ++i) {
-            cell_appended(cells[i]);
+            var cell = cells[i];
+            cell_appended(cell);
+
+            migrate_state(cell);
+            var state = get_state(cell);
+            set_state(cell, state);
         }
     }
 
@@ -310,21 +453,21 @@ define([
     }
 
     function is_frozen(cell) {
-        return freeze.get_state(cell) === 'frozen';
+        return get_state(cell).frozen;
     }
 
     function freeze_cell(cell) {
         if (!(cell instanceof codecell.CodeCell)) {
             return;
         }
-        freeze.set_state(cell, 'frozen');
+        set_state(cell, {frozen: true});
     }
 
     function unfreeze_cell(cell) {
         if (!(cell instanceof codecell.CodeCell)) {
             return;
         }
-        freeze.set_state(cell, 'normal');
+        set_state(cell, {frozen: false});
 
         var results = result_views[cell.cell_id];
         if (results) {
@@ -389,20 +532,60 @@ define([
         }
     }
 
-    function regist_toolbar_buttons() {
+    function make_editable_selected() {
+        set_state_selected({read_only: false});
+    }
+
+    function make_read_only_selected() {
+        set_state_selected({read_only: true});
+    }
+
+    function freeze_selected() {
+        set_state_selected({frozen: true});
+    }
+
+    function unfreeze_selected() {
+        set_state_selected({frozen: false});
+    }
+
+    function register_toolbar_buttons() {
         Jupyter.toolbar.add_buttons_group([
+            {
+                id : 'make_normal',
+                label : 'lift restrictions from selected cells',
+                icon : 'fa-unlock-alt',
+                callback : make_editable_selected
+            },
+            {
+                id : 'make_read_only',
+                label : 'make selected cells read-only',
+                icon: 'fa-lock',
+                callback : make_read_only_selected
+            },
+            {
+                id : 'freeze_cells',
+                label : 'freeze selected cells',
+                icon : 'fa-freeze',
+                callback : freeze_selected
+            },
+            {
+                id : 'unfreeze_cells',
+                label : 'unfreeze selected cells',
+                icon : 'fa-unfreeze',
+                callback : unfreeze_selected
+            },
             {
                 id : 'unfreeze_below_in_section',
                 label : 'unfreeze below in section',
-                icon: 'fa-unlock-below-in-section',
+                icon: 'fa-unfreeze-below-in-section',
                 callback : unfreeze_below_in_section
             },
             {
                 id : 'unfreeze_below_all',
                 label : 'unfreeze below all',
-                icon: 'fa-unlock-below-all',
+                icon: 'fa-unfreeze-below-all',
                 callback : unfreeze_below_all
-            }
+            },
         ]);
     }
 
@@ -417,22 +600,30 @@ define([
             .appendTo('head');
 
         var extensions = Jupyter.notebook.config.data.load_extensions;
-        if (!extensions['freeze/main']) {
-            console.error('[run_through] Please enables freeze extension');
-        }
         if (!extensions['collapsible_headings/main']) {
             console.error('[run_through] Please enables collapsible_headings extension');
         }
 
-        init_events();
-        regist_toolbar_buttons();
+        register_toolbar_buttons();
+        patch_CodeCell_execute();
+        patch_MarkdownCell_unrender();
         patch_CodeCell_get_callbacks();
         patch_CodeCell_clear_output();
 
-        events.on("notebook_loaded.Notebook", init_cell_states);
-        if (Jupyter.notebook !== undefined && Jupyter.notebook._fully_loaded) {
-            init_cell_states();
-        }
+        init_events();
+
+        Jupyter.notebook.config.loaded.then(function on_config_loaded () {
+            $.extend(true, options, Jupyter.notebook.config.data[mod_name]);
+        }, function on_config_load_error (reason) {
+            console.warn(log_prefix, 'Using defaults after error loading config:', reason);
+        }).then(function do_stuff_with_config () {
+            events.on("notebook_loaded.Notebook", init_cell_states);
+            if (Jupyter.notebook !== undefined && Jupyter.notebook._fully_loaded) {
+                init_cell_states();
+            }
+        }).catch(function on_error (reason) {
+            console.error(log_prefix, 'Error:', reason);
+        });
     }
 
     return {
