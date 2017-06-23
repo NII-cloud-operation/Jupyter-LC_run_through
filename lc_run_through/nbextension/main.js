@@ -566,7 +566,7 @@ define([
             },
             {
                 id : 'make_normal',
-                label : 'lift restrictions from selected cells',
+                label : 'make selected cells editable',
                 icon : 'fa-unlock-alt',
                 callback : make_editable_selected
             },
