@@ -72,7 +72,7 @@ A brick with a snowflake means it is *Frozen* cell as below.
 
 ![Expanded View](lc_run_through/nbextension/expanded.png)
 
-The extension provides *Lock*(make the cell read only) and *Freeze*(prevent an re-execution) functions like [Freeze extention ](https://github.com/ipython-contrib/jupyter_contrib_nbextensions/tree/master/src/jupyter_contrib_nbextensions/nbextensions/freeze), but also allows to control the *Locked(Read Only)* and *Frozen* states separately.
+The extension provides *Lock*(make the cell read only) and *Freeze*(prevent re-execution) functions like [Freeze extention ](https://github.com/ipython-contrib/jupyter_contrib_nbextensions/tree/master/src/jupyter_contrib_nbextensions/nbextensions/freeze), but also allows to control the *Locked(Read Only)* and *Frozen* states separately.
 
 ## Toolbar
 
