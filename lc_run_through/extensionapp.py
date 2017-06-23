@@ -35,13 +35,7 @@ class ExtensionQuickSetupApp(BaseExtensionApp):
         enable.start()
 
         print('Enables dependecy extensions')
-        self.enable_freeze()
         self.enable_collapsible_headings()
-
-    def enable_freeze(self):
-        enable = nbextensions.EnableNBExtensionApp()
-        enable.initialize(['freeze/main'])
-        enable.start();
 
     def enable_collapsible_headings(self):
         enable = nbextensions.EnableNBExtensionApp()
