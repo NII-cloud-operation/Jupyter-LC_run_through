@@ -133,7 +133,6 @@ define([
             return;
         }
 
-        var bg;
         if (state.frozen !== undefined) {
             if (cell.metadata.run_through_control !== undefined) {
                 cell.metadata.run_through_control.frozen = state.frozen;
@@ -168,23 +167,32 @@ define([
                 delete cell.metadata.run_through_control.frozen;
                 delete cell.metadata.run_through_control.read_only;
             }
-            bg = "";
         } else if (state.frozen) {
             cell.metadata.editable = false;
             cell.metadata.deletable = false;
-            bg = options.frozen_color;
         } else {
             cell.metadata.editable = false;
             cell.metadata.deletable = false;
-            bg = options.readonly_color;
         }
         // remove whole object if it's now empty
         if (cell.metadata.run_through_control !== undefined && Object.keys(cell.metadata.run_through_control).length === 0) {
             delete cell.metadata.run_through_control;
         }
         cell.code_mirror.setOption('readOnly', !cell.metadata.editable);
-        var prompt = cell.element.find('div.input_area');
-        prompt.css("background-color", bg);
+        var inputArea = cell.element.find('div.input_area');
+        if (state.read_only) {
+            inputArea.css("background-color", options.readonly_color);
+        } else {
+            inputArea.css("background-color", "");
+        }
+        var prompt = cell.element.find('div.input_prompt bdi');
+        if (state.frozen) {
+            prompt.addClass("prompt-freeze");
+            prompt.css("background-color", options.frozen_color);
+        } else {
+            prompt.removeClass("prompt-freeze");
+            prompt.css("background-color", "");
+        }
     }
 
     function set_state_selected (state) {
@@ -367,9 +375,9 @@ define([
             result_elem.addClass('code-success');
         }
         if (frozen) {
-            result_elem.addClass('fa fa-lock')
+            result_elem.addClass('fa fa-freeze')
         } else {
-            result_elem.removeClass('fa fa-lock')
+            result_elem.removeClass('fa fa-freeze')
         }
     }
 
@@ -551,16 +559,16 @@ define([
     function register_toolbar_buttons() {
         Jupyter.toolbar.add_buttons_group([
             {
-                id : 'make_normal',
-                label : 'lift restrictions from selected cells',
-                icon : 'fa-unlock-alt',
-                callback : make_editable_selected
-            },
-            {
                 id : 'make_read_only',
                 label : 'make selected cells read-only',
                 icon: 'fa-lock',
                 callback : make_read_only_selected
+            },
+            {
+                id : 'make_normal',
+                label : 'lift restrictions from selected cells',
+                icon : 'fa-unlock-alt',
+                callback : make_editable_selected
             },
             {
                 id : 'freeze_cells',

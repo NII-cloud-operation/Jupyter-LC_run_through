@@ -49,23 +49,56 @@
 }
 
 .fa-freeze:before {
-  content: "\f256";
+  content: "\f2dc";
+}
+
+.btn .fa-freeze {
+  background-color: royalblue;
+  color: white;
+  padding: 1px;
+  border-radius: 2px;
+}
+
+.run-through .fa-freeze {
+  color: white;
 }
 
 .fa-unfreeze:before {
-  content: "\f259";
-}
-
-.fa-unfreeze {
-  font-weight: bold;
-  color: white;
-  background: #222;
+  content: "\f2dc";
+  color: #888;
 }
 
 .fa-unfreeze-below-all:before {
-    content: "\f259\00a0\f04e";
+    content: "\f2dc";
+    color: #888;
+}
+
+.fa-unfreeze-below-all:after {
+    content: "\00a0\f04e";
 }
 
 .fa-unfreeze-below-in-section:before {
-    content: "\f259\00a0\f050"
+    content: "\f2dc";
+    color: #888;
+}
+
+.fa-unfreeze-below-in-section:after {
+    content: "\00a0\f050"
+}
+
+.prompt-freeze {
+    color: white;
+    padding: 2px;
+    border-radius: 2px;
+}
+
+.prompt-freeze:before {
+    content: "\f2dc";
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin-right: 0.3em;
 }
