@@ -570,6 +570,8 @@ define([
                 icon : 'fa-unlock-alt',
                 callback : make_editable_selected
             },
+        ]);
+        Jupyter.toolbar.add_buttons_group([
             {
                 id : 'freeze_cells',
                 label : 'freeze selected cells',
