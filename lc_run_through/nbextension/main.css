@@ -48,6 +48,13 @@
     background: #ff8888;
 }
 
+.btn .fa-lock {
+  background-color: #fffef0;
+  color: black;
+  padding: 2px;
+  border-radius: 2px;
+}
+
 .fa-freeze:before {
   content: "\f2dc";
 }
