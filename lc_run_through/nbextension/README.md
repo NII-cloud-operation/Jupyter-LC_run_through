@@ -23,8 +23,8 @@ The code cells which are collapsed appear as colored bricks.
 The colors mean as follows:
 
 - Gray: Not Executed
-- Green: Successfully Executed
-- Pink: Failed
+- Light Green: Successfully Executed
+- Light Coral: Failed
 
 A brick with a snowflake means it is *Frozen* cell as below.
 
