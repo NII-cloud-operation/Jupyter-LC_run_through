@@ -228,6 +228,8 @@ define([
             var state = get_state(cell);
             set_state(cell, state);
         }
+
+        init_events();
     }
 
     function is_heading(cell) {
@@ -629,8 +631,6 @@ define([
         patch_MarkdownCell_unrender();
         patch_CodeCell_get_callbacks();
         patch_CodeCell_clear_output();
-
-        init_events();
 
         Jupyter.notebook.config.loaded.then(function on_config_loaded () {
             $.extend(true, options, Jupyter.notebook.config.data[mod_name]);
