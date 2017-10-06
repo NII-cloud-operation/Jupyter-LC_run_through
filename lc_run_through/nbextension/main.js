@@ -26,6 +26,12 @@ define([
     function init_events() {
         events.on('create.Cell', function (e, data) {
             cell_appended(data.cell);
+            setTimeout(function() {
+                var status = get_state(data.cell);
+                if (status.frozen || status.read_only) {
+                    set_state(data.cell, {frozen: false, read_only: false});
+                }
+            }, 0);
         });
 
         events.on('delete.Cell', function (e, data) {
@@ -222,6 +228,8 @@ define([
             var state = get_state(cell);
             set_state(cell, state);
         }
+
+        init_events();
     }
 
     function is_heading(cell) {
@@ -623,8 +631,6 @@ define([
         patch_MarkdownCell_unrender();
         patch_CodeCell_get_callbacks();
         patch_CodeCell_clear_output();
-
-        init_events();
 
         Jupyter.notebook.config.loaded.then(function on_config_loaded () {
             $.extend(true, options, Jupyter.notebook.config.data[mod_name]);
