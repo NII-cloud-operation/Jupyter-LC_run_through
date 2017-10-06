@@ -84,13 +84,17 @@ define([
         console.log('[run_through] patching CodeCell.prototype.clear_output');
         var previous_clear_output = codecell.CodeCell.prototype.clear_output;
         codecell.CodeCell.prototype.clear_output = function() {
+            var frozen = is_frozen(this);
+            if (frozen) {
+                console.log("Can't clear output since cell is frozen.");
+                return;
+            }
             previous_clear_output.apply(this, arguments);
             var cell = this;
             var results = result_views[cell.cell_id];
             if (results) {
                 $.each(results, function(i, result) {
                     var status = get_output_status(cell);
-                    var frozen = is_frozen(cell);
                     update_result_elem(result.element, status, frozen);
                 });
             }
