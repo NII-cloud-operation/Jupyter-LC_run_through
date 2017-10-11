@@ -570,44 +570,38 @@ define([
 
     function register_toolbar_buttons() {
         Jupyter.toolbar.add_buttons_group([
-            {
-                id : 'make_read_only',
-                label : 'make selected cells read-only',
-                icon: 'fa-lock',
-                callback : make_read_only_selected
-            },
-            {
-                id : 'make_normal',
-                label : 'make selected cells editable',
+            Jupyter.keyboard_manager.actions.register({
+                help : 'make selected cells read-only',
+                icon : 'fa-lock',
+                handler : make_read_only_selected
+            }, 'make_read_only', mod_name),
+            Jupyter.keyboard_manager.actions.register({
+                help : 'make selected cells editable',
                 icon : 'fa-unlock-alt',
-                callback : make_editable_selected
-            },
+                handler : make_editable_selected
+            }, 'make_normal', mod_name),
         ]);
         Jupyter.toolbar.add_buttons_group([
-            {
-                id : 'freeze_cells',
-                label : 'freeze selected cells',
+            Jupyter.keyboard_manager.actions.register({
+                help : 'freeze selected cells',
                 icon : 'fa-freeze',
-                callback : freeze_selected
-            },
-            {
-                id : 'unfreeze_cells',
-                label : 'unfreeze selected cells',
+                handler : freeze_selected
+            }, 'freeze_cells', mod_name),
+            Jupyter.keyboard_manager.actions.register({
+                help : 'unfreeze selected cells',
                 icon : 'fa-unfreeze',
-                callback : unfreeze_selected
-            },
-            {
-                id : 'unfreeze_below_in_section',
-                label : 'unfreeze below in section',
+                handler : unfreeze_selected
+            }, 'unfreeze_cells', mod_name),
+            Jupyter.keyboard_manager.actions.register({
+                help : 'unfreeze below in section',
                 icon: 'fa-unfreeze-below-in-section',
-                callback : unfreeze_below_in_section
-            },
-            {
-                id : 'unfreeze_below_all',
-                label : 'unfreeze below all',
+                handler : unfreeze_below_in_section
+            }, 'unfreeze_below_in_section', mod_name),
+            Jupyter.keyboard_manager.actions.register({
+                help : 'unfreeze below all',
                 icon: 'fa-unfreeze-below-all',
-                callback : unfreeze_below_all
-            },
+                handler : unfreeze_below_all
+            }, 'unfreeze_below_all', mod_name),
         ]);
     }
 
