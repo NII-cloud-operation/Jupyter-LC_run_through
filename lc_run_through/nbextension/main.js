@@ -143,33 +143,35 @@ define([
             return;
         }
 
-        if (state.frozen !== undefined) {
+        var should_frozen = state.frozen;
+        if (should_frozen !== undefined) {
             if (cell.metadata.run_through_control !== undefined) {
-                cell.metadata.run_through_control.frozen = state.frozen;
+                cell.metadata.run_through_control.frozen = should_frozen;
             }else{
-                cell.metadata.run_through_control = {frozen: state.frozen};
+                cell.metadata.run_through_control = {frozen: should_frozen};
             }
         } else if (cell.metadata.run_through_control !== undefined &&
                    cell.metadata.run_through_control.frozen !== undefined) {
-            state.frozen = cell.metadata.run_through_control.frozen;
+            should_frozen = cell.metadata.run_through_control.frozen;
         } else {
-            state.frozen = false;
+            should_frozen = false;
         }
 
-        if (state.read_only !== undefined) {
+        var should_read_only = state.read_only;
+        if (should_read_only !== undefined) {
             if (cell.metadata.run_through_control !== undefined) {
-                cell.metadata.run_through_control.read_only = state.read_only;
+                cell.metadata.run_through_control.read_only = should_read_only;
             }else{
-                cell.metadata.run_through_control = {read_only: state.read_only};
+                cell.metadata.run_through_control = {read_only: should_read_only};
             }
         } else if (cell.metadata.run_through_control !== undefined &&
                    cell.metadata.run_through_control.read_only !== undefined) {
-            state.read_only = cell.metadata.run_through_control.read_only;
+            should_read_only = cell.metadata.run_through_control.read_only;
         } else {
-            state.read_only = false;
+            should_read_only = false;
         }
 
-        if (! state.frozen && ! state.read_only) {
+        if (! should_frozen && ! should_read_only) {
             // normal cell
             cell.metadata.editable = true;
             cell.metadata.deletable = true;
@@ -177,7 +179,7 @@ define([
                 delete cell.metadata.run_through_control.frozen;
                 delete cell.metadata.run_through_control.read_only;
             }
-        } else if (state.frozen) {
+        } else if (should_frozen) {
             cell.metadata.editable = false;
             cell.metadata.deletable = false;
         } else {
@@ -190,13 +192,13 @@ define([
         }
         cell.code_mirror.setOption('readOnly', !cell.metadata.editable);
         var inputArea = cell.element.find('div.input_area');
-        if (state.read_only) {
+        if (should_read_only) {
             inputArea.css("background-color", options.readonly_color);
         } else {
             inputArea.css("background-color", "");
         }
         var prompt = cell.element.find('div.input_prompt bdi');
-        if (state.frozen) {
+        if (should_frozen) {
             prompt.addClass("prompt-freeze");
             prompt.css("background-color", options.frozen_color);
         } else {
