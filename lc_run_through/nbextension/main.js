@@ -37,6 +37,12 @@ define([
         events.on('delete.Cell', function (e, data) {
             cell_deleted(data.cell);
         });
+
+        events.on("rendered.MarkdownCell", function (e, data) {
+            setTimeout(function() {
+                update_all_result_view_headings();
+            }, 0);
+        });
     }
 
     function patch_MarkdownCell_unrender () {
@@ -331,7 +337,7 @@ define([
                 elem.appendTo(container);
             } else if (is_heading(cell)) {
                 elem = $('<span/>').addClass('heading-result');
-                elem.text(get_heading_text(cell));
+                elem.html(get_heading_html(cell));
                 elem.appendTo(container);
             } else {
                 elem = $('<span/>').addClass('text-result');
@@ -369,6 +375,14 @@ define([
                 delete result_views[cell.cell_id];
             }
         }
+    }
+
+    function update_all_result_view_headings() {
+        $.each(result_views, function(cell_id, results) {
+            $.each(results, function(i, result) {
+                result.element.html(get_heading_html(result.cell));
+            });
+        });
     }
 
     function update_all_result_view() {
@@ -409,18 +423,29 @@ define([
         }, 100);
     }
 
-    function get_heading_text(heading_cell)
-    {
+    function removeMathJaxPreview(elt) {
+        elt.children('.anchor-link, .toc-mod-link').remove();
+        elt.find("script[type='math/tex']").each(
+            function(i, e) {
+                $(e).replaceWith('$' + $(e).text() + '$')
+            })
+        elt.find("span.MathJax_Preview").remove()
+        elt.find("span.MathJax").remove()
+        return elt
+    }
+
+    function get_heading_text(heading_cell) {
+        return heading_cell.element.find(':header').text();
+    }
+
+    function get_heading_html(heading_cell) {
         if(!is_heading(heading_cell)) {
             return "";
         }
 
-        var elem = 'h' + ch.get_cell_level(heading_cell);
-        return heading_cell.element.find('.rendered_html ' + elem)
-            .contents()
-            .filter(function() {
-                return this.nodeType === 3 && $.inArray($(this).parent(), heading_cell);
-            }).text();
+        var hclone = heading_cell.element.find(':header').clone();
+        hclone = removeMathJaxPreview(hclone);
+        return hclone.html();
     }
 
     function get_section_cells(heading_cell)
