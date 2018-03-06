@@ -1,3 +1,5 @@
+![demo](./demo.gif)
+
 # Jupyter-LC_run_through
 
 This extension enables to execute cells contained in a collapsed heading section
