@@ -16,6 +16,7 @@ define([
     var cells_status = {};
     var result_views = {};
     var execute_status = Array();
+    var executing_cells = Array();
 
     // defaults, overridden by server's config
     var options = {
@@ -319,6 +320,10 @@ define([
         var section_cells = get_section_cells(cell);
         create_result_view(container, cell, section_cells);
         cells_status[cell.cell_id]['section_cells'] = section_cells;
+
+        if (!is_finished(cell)) {
+            clickable.attr('disabled', true);
+        }
     }
 
     function remove_execute_ui(cell) {
@@ -412,15 +417,37 @@ define([
     function execute_section(heading_cell) {
         console.log('[run_through] start to execute the section: %s', get_heading_text(heading_cell));
         var section_cells = get_section_cells(heading_cell);
+        var execute = false;
         for (var i=0; i<section_cells.length; ++i) {
             var cell = section_cells[i];
             if (cell instanceof codecell.CodeCell) {
-                cell.execute();
+                var frozen = is_frozen(cell);
+                if (!frozen && cell.get_text().trim().length !== 0 && cell.kernel) {
+                    cell.execute();
+                    executing_cells.push(cell);
+                    execute = true;
+                }
             }
+        }
+        if (execute) {
+            disable_execution_button(heading_cell);
         }
         setTimeout(function() {
             update_all_result_view();
         }, 100);
+    }
+
+    function disable_execution_button(cell) {
+        cell.element.find('div.run-through button').attr('disabled', true);
+        var section_cells = cells_status[cell.cell_id]['section_cells'];
+        for (var i=0; i<section_cells.length; ++i) {
+            if (section_cells[i] instanceof textcell.MarkdownCell) {
+                var cell_id = section_cells[i].cell_id;
+                if (cells_status[cell_id]['section_cells']) {
+                    section_cells[i].element.find('div.run-through button').attr('disabled', true);
+                }
+            }
+        }
     }
 
     function removeMathJaxPreview(elt) {
@@ -481,6 +508,39 @@ define([
                 update_result_elem(result.element, status, frozen);
             });
         }
+        var executing_cell_index = $.inArray(cell, executing_cells);
+        if (executing_cell_index >= 0) {
+            executing_cells.splice(executing_cell_index, 1);
+        }
+        enable_execution_button(cell);
+    }
+
+    function enable_execution_button(cell) {
+        var cells = Jupyter.notebook.get_cells();
+        var index = $.inArray(cell, cells);
+        if (index < 0) {
+            return;
+        }
+
+        for (var i=0; i<index; ++i) {
+            var status = cells_status[cells[i].cell_id];
+            if (cells[i] instanceof textcell.MarkdownCell &&
+                status['section_cells'] && $.inArray(cell, status['section_cells'])) {
+                if (is_finished(cells[i])) {
+                    cells[i].element.find('div.run-through button').removeAttr('disabled');
+                }
+            }
+        }
+    }
+
+    function is_finished(cell) {
+        var section_cells = cells_status[cell.cell_id]['section_cells'];
+        for (var i=0; i<section_cells.length; ++i) {
+            if ($.inArray(section_cells[i], executing_cells) >= 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     function get_output_status(cell) {
