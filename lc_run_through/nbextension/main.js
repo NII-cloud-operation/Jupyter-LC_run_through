@@ -525,7 +525,7 @@ define([
         for (var i=0; i<index; ++i) {
             var status = cells_status[cells[i].cell_id];
             if (cells[i] instanceof textcell.MarkdownCell &&
-                status['section_cells'] && $.inArray(cell, status['section_cells'])) {
+                status['section_cells'] && $.inArray(cell, status['section_cells']) >= 0) {
                 if (is_finished(cells[i])) {
                     cells[i].element.find('div.run-through button').removeAttr('disabled');
                 }
