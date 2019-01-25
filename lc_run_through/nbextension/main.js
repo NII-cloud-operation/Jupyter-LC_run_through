@@ -398,15 +398,19 @@ define([
                 update_result_elem(result.element, status, frozen);
             });
         });
+
     }
 
     function update_result_elem(result_elem, status, frozen) {
-        result_elem.removeClass('code-success code-error');
+        result_elem.removeClass('code-success code-error code-interuption');
         if (status == "error") {
             result_elem.addClass('code-error');
         } else if (status == "ok") {
             result_elem.addClass('code-success');
+        }else if (status == "abort") {
+            result_elem.addClass('code-interuption');
         }
+
         if (frozen) {
             result_elem.addClass('fa fa-freeze')
         } else {
@@ -513,6 +517,11 @@ define([
             executing_cells.splice(executing_cell_index, 1);
         }
         enable_execution_button(cell);
+        if(cell.metadata.run_through_control!==undefined){
+            cell.metadata.run_through_control.execute_status= status;
+        }else{
+           cell.metadata.run_through_control = {execute_status: status};
+        }
     }
 
     function enable_execution_button(cell) {
@@ -550,13 +559,23 @@ define([
         if (!cell.input_prompt_number || cell.input_prompt_number === "*") {
             return null;
         }
-        var outputs = cell.output_area.outputs;
-        for (var i=0; i<outputs.length; ++i) {
-            if(outputs[i].output_type === "error") {
-                return "error";
+        if(cell.metadata.run_through_control.execute_status==null){
+            var outputs = cell.output_area.outputs;
+            for (var i=0; i<outputs.length; ++i) {
+               if(outputs[i].output_type === "error") {
+                    return "error";
+               }
+            }
+            return "ok";
+        }else{
+            if(cell.metadata.run_through_control.execute_status==="ok"){
+               return "ok"
+            }else if(cell.metadata.run_through_control.execute_status==="abort"){
+               return "abort";
+            }else if(cell.metadata.run_through_control.execute_status==="error"){
+               return "error"
             }
         }
-        return "ok";
     }
 
     function is_frozen(cell) {
