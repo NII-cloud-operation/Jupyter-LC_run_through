@@ -398,15 +398,19 @@ define([
                 update_result_elem(result.element, status, frozen);
             });
         });
+
     }
 
     function update_result_elem(result_elem, status, frozen) {
-        result_elem.removeClass('code-success code-error');
+        result_elem.removeClass('code-success code-error code-interuption');
         if (status == "error") {
             result_elem.addClass('code-error');
         } else if (status == "ok") {
             result_elem.addClass('code-success');
+        }else if (status == "abort") {
+            result_elem.addClass('code-interuption');
         }
+
         if (frozen) {
             result_elem.addClass('fa fa-freeze')
         } else {
@@ -495,7 +499,7 @@ define([
     }
 
     function finished_execute(cell, status) {
-        var index = Jupyter.notebook.find_cell_index(cell);
+    	var index = Jupyter.notebook.find_cell_index(cell);
         console.log("[run_through] cell execution finished: index=%s, status=%s", index, status);
         if (status == "ok") {
             console.log('[run_through] freeze executed cell: %d', index);
@@ -513,6 +517,11 @@ define([
             executing_cells.splice(executing_cell_index, 1);
         }
         enable_execution_button(cell);
+		if(cell.metadata.run_through_control!==undefined){
+			cell.metadata.run_through_control.execute_status= status;
+		}else{
+			cell.metadata.run_through_control = {execute_status: status};
+		}
     }
 
     function enable_execution_button(cell) {
@@ -544,19 +553,29 @@ define([
     }
 
     function get_output_status(cell) {
-        if (!(cell instanceof codecell.CodeCell)) {
+		if (!(cell instanceof codecell.CodeCell)) {
             return null;
         }
         if (!cell.input_prompt_number || cell.input_prompt_number === "*") {
             return null;
-        }
-        var outputs = cell.output_area.outputs;
-        for (var i=0; i<outputs.length; ++i) {
-            if(outputs[i].output_type === "error") {
-                return "error";
-            }
-        }
-        return "ok";
+        }	 
+	if(cell.metadata.run_through_control.execute_status==null){
+		var outputs = cell.output_area.outputs;
+		for (var i=0; i<outputs.length; ++i) {
+			if(outputs[i].output_type === "error") {
+				return "error";
+			}
+		}
+		return "ok";	
+	}else{
+		if(cell.metadata.run_through_control.execute_status==="ok"){
+			return "ok"
+		}else if(cell.metadata.run_through_control.execute_status==="abort"){
+			return "abort";
+		}else if(cell.metadata.run_through_control.execute_status==="error"){
+			return "error"
+		}
+	}
     }
 
     function is_frozen(cell) {

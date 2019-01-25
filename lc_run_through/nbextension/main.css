@@ -48,6 +48,10 @@
     background: #ff8888;
 }
 
+.run-through .code-interuption {
+    background-color: #FFC125;
+}
+
 .btn .fa-lock {
   background-color: #fffef0;
   color: black;
