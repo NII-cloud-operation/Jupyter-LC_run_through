@@ -236,6 +236,7 @@ define([
             migrate_state(cell);
             var state = get_state(cell);
             set_state(cell, state);
+	    changeColors(cell,get_output_status(cell))
         }
 
         init_events();
@@ -412,6 +413,17 @@ define([
         } else {
             result_elem.removeClass('fa fa-freeze')
         }
+    }
+
+    function changeColors(cell,status){
+        cell.element.removeClass('cell-success');
+        cell.element.removeClass('cell-error');
+        cell.element.removeClass('cell-inqueue');
+        if (status == "ok") {
+            cell.element.addClass('cell-status-success');
+        } else if (status == "error") {
+            cell.element.addClass('cell-status-error');
+        } 
     }
 
     function execute_section(heading_cell) {
