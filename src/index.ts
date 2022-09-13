@@ -4,6 +4,7 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
+import { ToolbarExtension } from './ToolbarExtension';
 // import { CodeCell } from '@jupyterlab/cells';
 // import { ISessionContext } from '@jupyterlab/apputils';
 // import { JSONObject } from '@lumino/coreutils';
@@ -40,6 +41,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     app.docRegistry.addWidgetExtension('Notebook', new ButtonExtension());
     app.docRegistry.addWidgetExtension('Notebook', new CellExtension());
+    app.docRegistry.addWidgetExtension('Notebook', new ToolbarExtension());
   }
 };
 
