@@ -1,5 +1,4 @@
 import { CellExtension } from './CellExtension';
-import { ButtonExtension } from './ButtonExtension';
 import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
@@ -39,7 +38,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     //   );
     // });
 
-    app.docRegistry.addWidgetExtension('Notebook', new ButtonExtension());
     app.docRegistry.addWidgetExtension('Notebook', new CellExtension());
     app.docRegistry.addWidgetExtension('Notebook', new ToolbarExtension());
   }
