@@ -20,8 +20,8 @@ export class ToolbarExtension
   ): void | IDisposable {
     const buttons = [
       new ToolbarButton({
-        className: 'fa fa-lock',
-        label: 'L1',
+        className: 'run-through-toolbar-button',
+        iconClass: 'fas fa-lock',
         tooltip: 'make selected cells read-only',
         onClick() {
           getSelectedOrActiveCells(widget.content).forEach(cell => {
@@ -30,8 +30,8 @@ export class ToolbarExtension
         }
       }),
       new ToolbarButton({
-        className: 'fa fa-unlock-alt',
-        label: 'UL1',
+        className: 'run-through-toolbar-button',
+        iconClass: 'fas fa-unlock',
         tooltip: 'make selected cells editable',
         onClick() {
           getSelectedOrActiveCells(widget.content).forEach(cell => {
@@ -40,8 +40,8 @@ export class ToolbarExtension
         }
       }),
       new ToolbarButton({
-        className: 'fa fa-freeze',
-        label: 'F1',
+        className: 'run-through-toolbar-button',
+        iconClass: 'far fa-snowflake',
         tooltip: 'freeze selected cells',
         onClick() {
           getSelectedOrActiveCells(widget.content).forEach(cell => {
@@ -50,8 +50,8 @@ export class ToolbarExtension
         }
       }),
       new ToolbarButton({
-        className: 'fa fa-unfreeze',
-        label: 'UF1',
+        className: 'run-through-toolbar-button',
+        iconClass: 'far fa-snowflake',
         tooltip: 'unfreeze selected cells',
         onClick() {
           getSelectedOrActiveCells(widget.content).forEach(cell => {
@@ -60,8 +60,8 @@ export class ToolbarExtension
         }
       }),
       new ToolbarButton({
-        className: 'fa fa-unfreeze-below-in-section',
-        label: 'UF2',
+        className: 'run-through-toolbar-button',
+        iconClass: 'far fa-snowflake',
         tooltip: 'unfreeze below in section',
         onClick() {
           getCellsInBelowSection(widget.content).forEach(cell => {
@@ -70,8 +70,8 @@ export class ToolbarExtension
         }
       }),
       new ToolbarButton({
-        className: 'fa fa-unfreeze-all',
-        label: 'UF3',
+        className: 'run-through-toolbar-button',
+        iconClass: 'far fa-snowflake',
         tooltip: 'unfreeze below all',
         onClick() {
           getCellsInBelowAll(widget.content).forEach(cell => {

@@ -3,3 +3,7 @@
 
     https://jupyterlab.readthedocs.io/en/stable/developer/css.html
 */
+
+.run-through-toolbar-button .jp-Icon {
+  color: var(--jp-ui-font-color1);
+}
