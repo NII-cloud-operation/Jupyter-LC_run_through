@@ -55,6 +55,7 @@ function onMarkdownCellAdded(
     | undefined;
   if (cell) {
     // collapse/expandに合わせて表示・非表示を切り替える
+    // TODO: Widgetの中でUseSignal使ってdisplay切り替えた方が安定するか？
 
     if (NotebookActions.getHeadingInfo(cell).collapsed) {
       // そのまま実行するとうまく動かないから無理やり動かしてるけど、安定しないかも
