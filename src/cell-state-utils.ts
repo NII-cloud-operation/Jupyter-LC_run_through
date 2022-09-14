@@ -17,10 +17,9 @@ export function setCellState(
   state: Partial<ICellState>
 ): void {
   cellModel.metadata.set('run_through_control', {
-    frozen: false,
-    read_only: false,
+    ...getCellState(cellModel),
     ...state
-  } as any);
+  });
 
   const locked = state.frozen || state.read_only;
   cellModel.metadata.set('editable', !locked);

@@ -9,6 +9,7 @@ import {
   MarkdownCell
 } from '@jupyterlab/cells';
 import { getSectionCells } from './getSectionCells';
+import { setCellState } from './cell-state-utils';
 
 export class ToolbarExtension
   implements DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>
@@ -24,7 +25,7 @@ export class ToolbarExtension
         tooltip: 'make selected cells read-only',
         onClick() {
           getSelectedOrActiveCells(widget.content).forEach(cell => {
-            console.warn('make a cell read-only', cell);
+            setCellState(cell.model, { read_only: true });
           });
         }
       }),
@@ -34,7 +35,7 @@ export class ToolbarExtension
         tooltip: 'make selected cells editable',
         onClick() {
           getSelectedOrActiveCells(widget.content).forEach(cell => {
-            console.warn('make a cell not read-only', cell);
+            setCellState(cell.model, { read_only: false });
           });
         }
       }),
@@ -44,7 +45,7 @@ export class ToolbarExtension
         tooltip: 'freeze selected cells',
         onClick() {
           getSelectedOrActiveCells(widget.content).forEach(cell => {
-            console.warn('make a cell frozen', cell);
+            setCellState(cell.model, { frozen: true });
           });
         }
       }),
@@ -54,7 +55,7 @@ export class ToolbarExtension
         tooltip: 'unfreeze selected cells',
         onClick() {
           getSelectedOrActiveCells(widget.content).forEach(cell => {
-            console.warn('make a cell unfrozen', cell);
+            setCellState(cell.model, { frozen: false });
           });
         }
       }),
@@ -64,7 +65,7 @@ export class ToolbarExtension
         tooltip: 'unfreeze below in section',
         onClick() {
           getCellsInBelowSection(widget.content).forEach(cell => {
-            console.warn('make a cell unfrozen', cell);
+            setCellState(cell.model, { frozen: false });
           });
         }
       }),
@@ -74,7 +75,7 @@ export class ToolbarExtension
         tooltip: 'unfreeze below all',
         onClick() {
           getCellsInBelowAll(widget.content).forEach(cell => {
-            console.warn('make a cell unfrozen', cell);
+            setCellState(cell.model, { frozen: false });
           });
         }
       })
