@@ -30,8 +30,12 @@ function patchCodeCellExecute(): void {
     if (getCellState(cell.model).frozen) {
       return Promise.resolve();
     }
-    setCellState(cell.model, { frozen: true });
-    return oldFunction(cell, sessionContext, metadata);
+    return oldFunction(cell, sessionContext, metadata).then(msg => {
+      if (msg && msg.content.status === 'ok') {
+        setCellState(cell.model, { frozen: true });
+      }
+      return msg;
+    });
   };
 }
 
