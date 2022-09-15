@@ -22,8 +22,12 @@ export function SectionRunButton({
   };
 
   return (
-    <button onClick={run} disabled={runButtonDisabled}>
-      Run Section
+    <button
+      onClick={run}
+      disabled={runButtonDisabled}
+      className="run-through-button"
+    >
+      <i className="fa fa-play-circle"></i>
     </button>
   );
 }

@@ -7,3 +7,8 @@
 .run-through-toolbar-button .jp-Icon {
   color: var(--jp-ui-font-color1);
 }
+
+.run-through-button {
+  border: 1px solid var(--jp-border-color2);
+  padding: 4px 6px;
+}
