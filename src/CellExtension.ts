@@ -30,8 +30,6 @@ export class CellExtension
         args.newValues.forEach(cellModel => {
           const cell = getCellFromModel(widget.content, cellModel);
           if (cell) {
-            // TODO: 本当はpromptの文字の前に置きたい
-
             // 実行時にinputAreaが再生成されてWidgetが消えるので改めて追加する
             cell.model.stateChanged.connect((_, args) => {
               if (args.name === 'executionCount') {

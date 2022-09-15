@@ -16,7 +16,7 @@ export class FrozenWidget extends ReactWidget {
           const state = getCellState(this.cellModel);
           if (state.frozen) {
             return (
-              <span className="fa fa-snowflake run-through-prompt-frozen"></span>
+              <span className="far fa-snowflake run-through-prompt-frozen"></span>
             );
           }
           return <></>;
