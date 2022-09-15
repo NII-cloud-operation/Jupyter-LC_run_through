@@ -24,3 +24,24 @@
   /* TODO: floatしてもexecutionCountが2桁になると横幅が足りなくて回り込んでしまう */
   float: left;
 }
+
+.run-through-code-result {
+  font-size: 100%;
+  margin: 5px 5px 5px 5px;
+  color: white;
+  line-height: 1.2em;
+  border-radius: 3px 3px;
+  width: 1.2em;
+  height: 1.2em;
+  text-align: center;
+  float: left;
+  background: #cccccc;
+}
+
+.run-through-code-result__success {
+  background: #85f185;
+}
+
+.run-through-code-result__error {
+  background: #ff8888;
+}

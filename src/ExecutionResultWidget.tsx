@@ -5,36 +5,26 @@ import React from 'react';
 
 type ExecutionResultStatus = 'success' | 'error' | 'pending';
 
-// export class ExecutionResultWidget extends ReactWidget {
-//   constructor(private cell: CodeCell) {
-//     super();
-//   }
-
-//   render(): JSX.Element {
-//     return (
-//       <UseSignal signal={this.cell.model.stateChanged}>
-//         {() => {
-//           return <ExecutionResult status={getExecutionStatus(this.cell)} />;
-//         }}
-//       </UseSignal>
-//     );
-//   }
-// }
-
-export function ExecutionResult({
-  status
-}: {
+interface IProps {
   status: ExecutionResultStatus;
-}): JSX.Element {
+  frozen: boolean;
+}
+
+export function ExecutionResult({ status, frozen }: IProps): JSX.Element {
+  const className = ['run-through-code-result'];
+
   if (status === 'success') {
-    return <div>success</div>;
+    className.push('run-through-code-result__success');
   }
-
   if (status === 'error') {
-    return <div>error</div>;
+    className.push('run-through-code-result__error');
   }
 
-  return <div>no result</div>;
+  if (frozen) {
+    className.push('far fa-snowflake');
+  }
+
+  return <span className={className.join(' ')}></span>;
 }
 
 function hasError(outputModel: IOutputAreaModel) {

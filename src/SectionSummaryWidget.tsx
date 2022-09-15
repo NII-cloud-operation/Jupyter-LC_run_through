@@ -7,6 +7,7 @@ import {
 } from '@jupyterlab/cells';
 import { Notebook } from '@jupyterlab/notebook';
 import React from 'react';
+import { getCellState } from './cell-state-utils';
 import { ExecutionResult, getExecutionStatus } from './ExecutionResultWidget';
 import { getSectionCells } from './getSectionCells';
 import { SectionRunButton } from './SectionRunButton';
@@ -31,6 +32,7 @@ export class SectionSummaryWidget extends ReactWidget {
               {() => (
                 <ExecutionResult
                   status={getExecutionStatus(cell as CodeCell)}
+                  frozen={getCellState(cell.model).frozen}
                 />
               )}
             </UseSignal>
@@ -41,19 +43,20 @@ export class SectionSummaryWidget extends ReactWidget {
           );
           const __html = markdownElement?.innerHTML ?? '';
           return (
-            <div
+            <span
               key={cell.model.id}
-              className="markdown-result"
+              className="run-through-heading-result"
               dangerouslySetInnerHTML={{ __html }}
-            ></div>
-          );
-        } else {
-          return (
-            <div key={cell.model.id} className="text-result">
-              {cell.inputArea.model.value.text}
-            </div>
+            ></span>
           );
         }
+        // else {
+        //   return (
+        //     <span key={cell.model.id} className="run-through-text-result">
+        //       {cell.inputArea.model.value.text}
+        //     </span>
+        //   );
+        // }
       }
     );
     return (
