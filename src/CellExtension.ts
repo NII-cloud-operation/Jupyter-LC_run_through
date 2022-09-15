@@ -11,10 +11,12 @@ import {
   isMarkdownCellModel,
   MarkdownCellModel,
   ICellModel,
-  MarkdownCell
+  MarkdownCell,
+  Cell
 } from '@jupyterlab/cells';
 import { Widget } from '@lumino/widgets';
 import { SectionSummaryWidget } from './SectionSummaryWidget';
+import { FrozenWidget } from './FrozenWidget';
 
 export class CellExtension
   implements DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>
@@ -24,6 +26,28 @@ export class CellExtension
     context: DocumentRegistry.IContext<INotebookModel>
   ): void | IDisposable {
     widget.content.model?.cells.changed.connect((_, args) => {
+      if (['add'].includes(args.type)) {
+        args.newValues.forEach(cellModel => {
+          const cell = getCellFromModel(widget.content, cellModel);
+          if (cell) {
+            // TODO: 本当はpromptの文字の前に置きたい
+
+            // 実行時にinputAreaが再生成されてWidgetが消えるので改めて追加する
+            cell.model.stateChanged.connect((_, args) => {
+              if (args.name === 'executionCount') {
+                Widget.attach(
+                  new FrozenWidget(cellModel),
+                  cell.inputArea.promptNode
+                );
+              }
+            });
+            Widget.attach(
+              new FrozenWidget(cellModel),
+              cell.inputArea.promptNode
+            );
+          }
+        });
+      }
       if (['add', 'set'].includes(args.type)) {
         args.newValues.forEach(c =>
           onCellAdded(c, widget.content, context.sessionContext)
@@ -34,12 +58,16 @@ export class CellExtension
 }
 
 function onCellAdded(
-  cell: ICellModel,
+  cellModel: ICellModel,
   notebook: Notebook,
   sessionContext: ISessionContext
 ) {
-  if (isMarkdownCellModel(cell)) {
-    onMarkdownCellAdded(cell as MarkdownCellModel, notebook, sessionContext);
+  if (isMarkdownCellModel(cellModel)) {
+    onMarkdownCellAdded(
+      cellModel as MarkdownCellModel,
+      notebook,
+      sessionContext
+    );
   }
 }
 
@@ -50,7 +78,7 @@ function onMarkdownCellAdded(
   notebook: Notebook,
   sessionContext: ISessionContext
 ) {
-  const cell = notebook.widgets.find(c => c.model.id === cellModel.id) as
+  const cell = getCellFromModel(notebook, cellModel) as
     | MarkdownCell
     | undefined;
   if (cell) {
@@ -84,4 +112,11 @@ function onMarkdownCellAdded(
       }
     });
   }
+}
+
+function getCellFromModel(
+  notebook: Notebook,
+  cellModel: ICellModel
+): Cell<ICellModel> | undefined {
+  return notebook.widgets.find(c => c.model.id === cellModel.id);
 }
