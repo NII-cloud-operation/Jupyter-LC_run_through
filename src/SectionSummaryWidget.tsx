@@ -20,7 +20,7 @@ export class SectionSummaryWidget extends ReactWidget {
   ) {
     super();
 
-    this.addClass('lc-SectionSummary');
+    this.addClass('lc-SectionSummaryWidget');
   }
 
   render(): JSX.Element {

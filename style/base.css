@@ -45,3 +45,7 @@
 .run-through-code-result__error {
   background: #ff8888;
 }
+
+.lc-SectionSummaryWidget {
+  margin-top: 12px;
+}
