@@ -49,3 +49,36 @@
 .lc-SectionSummaryWidget {
   margin-top: 12px;
 }
+
+.run-through-toolbar-button__freeze .fa-snowflake {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: cornflowerblue;
+  color: white;
+  padding: 1px;
+  border-radius: 2px;
+}
+
+.run-through-toolbar-button__unfreeze {
+  color: #888;
+}
+.run-through-toolbar-button__unfreeze .fa-snowflake {
+  color: #888;
+}
+
+.run-through-toolbar-button__unfreeze-section:after {
+  color: #888;
+  content: '\f050';
+}
+.run-through-toolbar-button__unfreeze-section .fa-snowflake {
+  color: #888;
+}
+
+.run-through-toolbar-button__unfreeze-all:after {
+  color: #888;
+  content: '\f04e';
+}
+.run-through-toolbar-button__unfreeze-all .fa-snowflake {
+  color: #888;
+}

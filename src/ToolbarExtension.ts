@@ -40,7 +40,8 @@ export class ToolbarExtension
         }
       }),
       new ToolbarButton({
-        className: 'run-through-toolbar-button',
+        className:
+          'run-through-toolbar-button run-through-toolbar-button__freeze',
         iconClass: 'far fa-snowflake',
         tooltip: 'freeze selected cells',
         onClick() {
@@ -50,7 +51,8 @@ export class ToolbarExtension
         }
       }),
       new ToolbarButton({
-        className: 'run-through-toolbar-button',
+        className:
+          'run-through-toolbar-button run-through-toolbar-button__unfreeze',
         iconClass: 'far fa-snowflake',
         tooltip: 'unfreeze selected cells',
         onClick() {
@@ -60,7 +62,8 @@ export class ToolbarExtension
         }
       }),
       new ToolbarButton({
-        className: 'run-through-toolbar-button',
+        className:
+          'run-through-toolbar-button run-through-toolbar-button__unfreeze-section fas',
         iconClass: 'far fa-snowflake',
         tooltip: 'unfreeze below in section',
         onClick() {
@@ -70,7 +73,8 @@ export class ToolbarExtension
         }
       }),
       new ToolbarButton({
-        className: 'run-through-toolbar-button',
+        className:
+          'run-through-toolbar-button run-through-toolbar-button__unfreeze-all fas',
         iconClass: 'far fa-snowflake',
         tooltip: 'unfreeze below all',
         onClick() {
@@ -80,8 +84,9 @@ export class ToolbarExtension
         }
       })
     ];
+    buttons.reverse();
     buttons.forEach((b, i) => {
-      widget.toolbar.insertItem(10 + i, `run-through-button ${i}`, b);
+      widget.toolbar.insertItem(10, `run-through-button ${i}`, b);
     });
 
     return new DisposableDelegate(() => {
