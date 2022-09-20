@@ -2,7 +2,7 @@ import { ISessionContext } from '@jupyterlab/apputils';
 import { MarkdownCell, isCodeCellModel, CodeCell } from '@jupyterlab/cells';
 import { Notebook } from '@jupyterlab/notebook';
 import { IExecuteReplyMsg } from '@jupyterlab/services/lib/kernel/messages';
-import { getSectionCells } from './getSectionCells';
+import { getSectionCells } from './cell-selection-utils';
 
 export function runSectionCells(
   cell: MarkdownCell,

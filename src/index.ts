@@ -1,3 +1,4 @@
+import { INotebookTracker } from '@jupyterlab/notebook';
 import { ExecutionExtension } from './ExecutionExtension';
 import { CellExtension } from './CellExtension';
 import {
@@ -5,23 +6,29 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 import { ToolbarExtension } from './ToolbarExtension';
-// import { CodeCell } from '@jupyterlab/cells';
-// import { ISessionContext } from '@jupyterlab/apputils';
-// import { JSONObject } from '@lumino/coreutils';
-// import { KernelMessage } from '@jupyterlab/services';
+import { pluginId, extensionId } from './plugin';
+import { registerCommands } from './commands';
+import { ICommandPalette } from '@jupyterlab/apputils';
 
 /**
  * Initialization data for the lc_run_through extension.
  */
 const plugin: JupyterFrontEndPlugin<void> = {
-  id: 'lc_run_through:plugin',
+  id: pluginId,
   autoStart: true,
-  activate: (app: JupyterFrontEnd) => {
-    console.debug('JupyterLab extension lc_run_through is activated!');
+  requires: [INotebookTracker, ICommandPalette],
+  activate: (
+    app: JupyterFrontEnd,
+    notebooks: INotebookTracker,
+    commandPalette: ICommandPalette
+  ) => {
+    console.debug('JupyterLab extension ' + extensionId + ' is activated!');
 
     app.docRegistry.addWidgetExtension('Notebook', new ExecutionExtension());
     app.docRegistry.addWidgetExtension('Notebook', new CellExtension());
     app.docRegistry.addWidgetExtension('Notebook', new ToolbarExtension());
+
+    registerCommands(app, notebooks, commandPalette);
   }
 };
 
