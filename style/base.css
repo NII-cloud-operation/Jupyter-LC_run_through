@@ -48,6 +48,8 @@
 
 .lc-SectionSummaryWidget {
   margin-top: 12px;
+  /* hiddenボタンの位置と揃える */
+  margin-left: calc(var(--jp-cell-prompt-width) + 2 * var(--jp-code-padding));
 }
 
 .run-through-toolbar-button__freeze .fa-snowflake {
