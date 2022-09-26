@@ -44,14 +44,19 @@ export class SectionSummaryWidget extends ReactWidget {
         const markdownElement = (cell as MarkdownCell).node.querySelector(
           '.jp-MarkdownOutput'
         );
-        const __html = markdownElement?.innerHTML ?? '';
-        return (
-          <span
-            key={cell.model.id}
-            className="run-through-heading-result"
-            dangerouslySetInnerHTML={{ __html }}
-          ></span>
-        );
+        const header = markdownElement?.querySelector('h1, h2, h3, h4, h5, h6');
+        if (header) {
+          const __html = header?.innerHTML ?? '';
+          return (
+            <span
+              key={cell.model.id}
+              className="run-through-heading-result"
+              dangerouslySetInnerHTML={{ __html }}
+            ></span>
+          );
+        } else {
+          return <span></span>;
+        }
       }
       // else {
       //   return (
@@ -70,7 +75,7 @@ export class SectionSummaryWidget extends ReactWidget {
             sessionContext={this.sessionContext}
           />
         </div>
-        {sectionCells}
+        <div className="run-through-section-cells">{sectionCells}</div>
       </div>
     );
   }
