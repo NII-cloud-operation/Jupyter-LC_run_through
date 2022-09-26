@@ -29,10 +29,14 @@ export class SectionSummaryWidget extends ReactWidget {
         return (
           <UseSignal key={cell.model.id} signal={cell.model.stateChanged}>
             {() => (
-              <ExecutionResult
-                status={getExecutionStatus(cell as CodeCell)}
-                frozen={getCellState(cell.model).frozen}
-              />
+              <UseSignal signal={cell.model.metadata.changed}>
+                {() => (
+                  <ExecutionResult
+                    status={getExecutionStatus(cell as CodeCell)}
+                    frozen={getCellState(cell.model).frozen}
+                  />
+                )}
+              </UseSignal>
             )}
           </UseSignal>
         );
