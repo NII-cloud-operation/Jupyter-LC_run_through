@@ -11,7 +11,7 @@ export class FrozenWidget extends ReactWidget {
 
   render(): JSX.Element {
     return (
-      <UseSignal signal={this.cellModel.metadata.changed}>
+      <UseSignal signal={this.cellModel.metadataChanged}>
         {() => {
           const state = getCellState(this.cellModel);
           if (state.frozen) {

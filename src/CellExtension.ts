@@ -32,17 +32,19 @@ export class CellExtension
           if (cell) {
             // 実行時にinputAreaが再生成されてWidgetが消えるので改めて追加する
             cell.model.stateChanged.connect((_, args) => {
-              if (args.name === 'executionCount') {
+              if (args.name === 'executionCount' && cell.inputArea) {
                 Widget.attach(
                   new FrozenWidget(cellModel),
                   cell.inputArea.promptNode
                 );
               }
             });
-            Widget.attach(
-              new FrozenWidget(cellModel),
-              cell.inputArea.promptNode
-            );
+            if(cell.inputArea) {
+              Widget.attach(
+                new FrozenWidget(cellModel),
+                cell.inputArea.promptNode
+              );
+            }
           }
         });
       }
@@ -94,7 +96,7 @@ function onMarkdownCellAdded(
         Widget.attach(memo[cell.model.id], cell.node);
       }, 0);
     }
-    cellModel.metadata.changed.connect((_, args) => {
+    cellModel.metadataChanged.connect((_, args) => {
       if (args.key === 'jp-MarkdownHeadingCollapsed') {
         if (args.type === 'add') {
           memo[cell.model.id] = new SectionSummaryWidget(

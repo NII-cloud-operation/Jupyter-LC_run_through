@@ -6,7 +6,7 @@ export interface ICellState {
 }
 
 export function getCellState(cellModel: ICellModel): ICellState {
-  const state = cellModel.metadata.get(
+  const state = cellModel.getMetadata(
     'run_through_control'
   ) as ICellState | null;
   return state ? state : { frozen: false, read_only: false };
@@ -16,14 +16,14 @@ export function setCellState(
   cellModel: ICellModel,
   state: Partial<ICellState>
 ): void {
-  cellModel.metadata.set('run_through_control', {
+  cellModel.setMetadata('run_through_control', {
     ...getCellState(cellModel),
     ...state
   });
 
   const locked = state.frozen || state.read_only;
-  cellModel.metadata.set('editable', !locked);
-  cellModel.metadata.set('deletable', !locked);
+  cellModel.setMetadata('editable', !locked);
+  cellModel.setMetadata('deletable', !locked);
 
   //   cell.code_mirror.setOption('readOnly', !cell.metadata.editable);
   //   var inputArea = cell.element.find('div.input_area');
