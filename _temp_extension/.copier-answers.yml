@@ -1,8 +1,8 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
 _commit: v4.1.0
 _src_path: https://github.com/jupyterlab/extension-template
-author_email: nii@example.com
-author_name: nii
+author_email: ii@entap.co.jp
+author_name: ii masamitsu
 has_binder: true
 has_settings: false
 kind: frontend

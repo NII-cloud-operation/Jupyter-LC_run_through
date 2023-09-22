@@ -13,8 +13,8 @@
     },
     "license": "BSD-3-Clause",
     "author": {
-        "name": "nii",
-        "email": "nii@example.com"
+        "name": "ii masamitsu",
+        "email": "ii@entap.co.jp"
     },
     "files": [
         "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
