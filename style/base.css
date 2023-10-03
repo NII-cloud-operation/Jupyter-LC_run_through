@@ -14,7 +14,7 @@
 }
 
 .run-through-prompt-frozen {
-  background-color: rgb(100, 149, 237);
+  background-color: rgb(100 149 237);
   color: white;
   padding: 2px 1px;
   border-radius: 2px;
@@ -40,7 +40,7 @@
   height: 1.2em;
   line-height: 1.2em;
   text-align: center;
-  background: #cccccc;
+  background: #ccc;
 }
 
 .run-through-code-result__success {
@@ -48,7 +48,7 @@
 }
 
 .run-through-code-result__error {
-  background: #ff8888;
+  background: #f88;
 }
 
 .run-through-heading-result {
@@ -58,6 +58,7 @@
 
 .lc-SectionSummaryWidget {
   margin-top: 12px;
+
   /* hiddenボタンの位置と揃える */
   margin-left: calc(var(--jp-cell-prompt-width) + 2 * var(--jp-code-padding));
 }
@@ -75,22 +76,25 @@
 .run-through-toolbar-button__unfreeze {
   color: #888;
 }
+
 .run-through-toolbar-button__unfreeze .fa-snowflake {
   color: #888;
 }
 
-.run-through-toolbar-button__unfreeze-section:after {
+.run-through-toolbar-button__unfreeze-section::after {
   color: #888;
   content: '\f050';
 }
+
 .run-through-toolbar-button__unfreeze-section .fa-snowflake {
   color: #888;
 }
 
-.run-through-toolbar-button__unfreeze-all:after {
+.run-through-toolbar-button__unfreeze-all::after {
   color: #888;
   content: '\f04e';
 }
+
 .run-through-toolbar-button__unfreeze-all .fa-snowflake {
   color: #888;
 }

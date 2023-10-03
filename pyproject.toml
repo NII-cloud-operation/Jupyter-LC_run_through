@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "lc_run_through"
 readme = "README.md"
-license = { file = "LICENSE" }
+license = { file = "LICENSE.txt" }
 requires-python = ">=3.8"
 classifiers = [
     "Framework :: Jupyter",

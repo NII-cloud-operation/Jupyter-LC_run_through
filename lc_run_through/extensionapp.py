@@ -4,16 +4,17 @@ import io
 
 from ._version import __version__
 
-from notebook.nbextensions import (InstallNBExtensionApp, EnableNBExtensionApp,
-    DisableNBExtensionApp)
+# from notebook.nbextensions import (InstallNBExtensionApp, EnableNBExtensionApp,
+#     DisableNBExtensionApp)
 
-try:
-    from notebook.extensions import BaseExtensionApp
-except ImportError:
-    from notebook.nbextensions import BaseNBExtensionApp
-    BaseExtensionApp = BaseNBExtensionApp
+from jupyter_server.extension.serverextension import BaseExtensionApp
+# try:
+#     from notebook.extensions import BaseExtensionApp
+# except ImportError:
+#     from notebook.nbextensions import BaseNBExtensionApp
+#     BaseExtensionApp = BaseNBExtensionApp
 
-from notebook import nbextensions
+# from notebook import nbextensions
 
 from traitlets.config.application import catch_config_error
 from traitlets.config.application import Application
@@ -27,20 +28,21 @@ class ExtensionQuickSetupApp(BaseExtensionApp):
     def start(self):
         self.argv.extend(['--py', 'lc_run_through'])
 
-        install = nbextensions.InstallNBExtensionApp()
-        install.initialize(self.argv)
-        install.start()
-        enable = nbextensions.EnableNBExtensionApp()
-        enable.initialize(self.argv)
-        enable.start()
+        # install = nbextensions.InstallNBExtensionApp()
+        # install.initialize(self.argv)
+        # install.start()
+        # enable = nbextensions.EnableNBExtensionApp()
+        # enable.initialize(self.argv)
+        # enable.start()
 
         print('Enables dependecy extensions')
         self.enable_collapsible_headings()
 
     def enable_collapsible_headings(self):
-        enable = nbextensions.EnableNBExtensionApp()
-        enable.initialize(['collapsible_headings/main'])
-        enable.start();
+        pass
+        # enable = nbextensions.EnableNBExtensionApp()
+        # enable.initialize(['collapsible_headings/main'])
+        # enable.start();
 
 
 class ExtensionQuickRemovalApp(BaseExtensionApp):
@@ -52,12 +54,12 @@ class ExtensionQuickRemovalApp(BaseExtensionApp):
     def start(self):
         self.argv.extend(['--py', 'lc_run_through'])
 
-        disable = nbextensions.DisableNBExtensionApp()
-        disable.initialize(self.argv)
-        disable.start()
-        uninstall = nbextensions.UninstallNBExtensionApp()
-        uninstall.initialize(self.argv)
-        uninstall.start()
+        # disable = nbextensions.DisableNBExtensionApp()
+        # disable.initialize(self.argv)
+        # disable.start()
+        # uninstall = nbextensions.UninstallNBExtensionApp()
+        # uninstall.initialize(self.argv)
+        # uninstall.start()
 
 class ExtensionApp(Application):
     '''CLI for extension management.'''

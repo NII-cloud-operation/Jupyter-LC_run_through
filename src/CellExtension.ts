@@ -39,7 +39,7 @@ export class CellExtension
                 );
               }
             });
-            if(cell.inputArea) {
+            if (cell.inputArea) {
               Widget.attach(
                 new FrozenWidget(cellModel),
                 cell.inputArea.promptNode
