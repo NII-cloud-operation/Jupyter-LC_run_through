@@ -25,6 +25,9 @@ dependencies = [
 ]
 dynamic = ["version", "description", "authors", "urls", "keywords"]
 
+[project.scripts]
+jupyter-run-through = "lc_run_through.extensionapp:main"
+
 [tool.hatch.version]
 source = "nodejs"
 
