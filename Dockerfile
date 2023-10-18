@@ -4,13 +4,12 @@ USER root
 
 ### extensions for jupyter
 COPY . /tmp/run_through
-RUN pip3 --no-cache-dir install jupyter_nbextensions_configurator \
+RUN pip --no-cache-dir install jupyter_nbextensions_configurator \
     jupyter_contrib_nbextensions \
     /tmp/run_through
 
 RUN jupyter labextension enable lc_run_through && \
     jupyter run-through quick-setup --sys-prefix && \
-    # jlpm cache clean && \
     npm cache clean --force
 
 RUN jupyter nbclassic-extension install --py jupyter_nbextensions_configurator --sys-prefix && \
