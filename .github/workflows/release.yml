@@ -14,11 +14,11 @@ jobs:
     - name: Install node
       uses: actions/setup-node@v3
       with:
-       node-version: 16
+       node-version: 18
     - name: Install Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'
+        python-version: '3.9'
         architecture: 'x64'
 
 
@@ -26,9 +26,9 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.cache/pip
-        key: pip-3.8-${{ hashFiles('package.json') }}
+        key: pip-3.9-${{ hashFiles('package.json') }}
         restore-keys: |
-          pip-3.8-
+          pip-3.9-
           pip-
 
     - name: Get yarn cache directory path
@@ -52,10 +52,15 @@ jobs:
         jlpm run eslint:check
         python -m pip install .
 
-        #jupyter server extension list 2>&1 | grep -ie "lc_run_through.*OK"
-
-        #jupyter labextension list 2>&1 | grep -ie "lc_run_through.*OK"
+        jupyter labextension list 2>&1 | grep -ie "lc_run_through.*OK"
         python -m jupyterlab.browser_check
+
+        jlpm install
+        cd ./ui-tests
+        jlpm install
+        jlpm playwright install
+        jlpm playwright test
+        cd ..
 
         pip install build
         python -m build --sdist
