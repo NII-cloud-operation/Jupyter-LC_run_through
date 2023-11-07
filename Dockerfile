@@ -5,7 +5,7 @@ USER root
 ### extensions for jupyter
 COPY . /tmp/run_through
 RUN pip --no-cache-dir install jupyter_nbextensions_configurator \
-    jupyter_contrib_nbextensions \
+    jupyter_contrib_nbextensions autopep8 \
     /tmp/run_through
 
 RUN jupyter labextension enable lc_run_through && \
