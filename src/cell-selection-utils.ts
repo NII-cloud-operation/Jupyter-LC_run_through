@@ -82,7 +82,7 @@ export function getCellsInBelowSection(notebook: Notebook): Cell<ICellModel>[] {
 
   const sectionCells = [];
   const index_in_section = section.findIndex(
-    cell => cell.id === cells[index].id
+    cell => cell === cells[index]
   );
 
   for (let i = index_in_section; i < section.length; ++i) {
