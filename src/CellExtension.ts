@@ -39,12 +39,15 @@ export class CellExtension
                 );
               }
             });
-            if (cell.inputArea) {
-              Widget.attach(
-                new FrozenWidget(cellModel),
-                cell.inputArea.promptNode
-              );
-            }
+            // 最初はinputAreaが存在していないのでattachされてから追加する
+            cell.inViewportChanged.connect((_, isAttached) => {
+              if (isAttached && cell.inputArea) {
+                Widget.attach(
+                  new FrozenWidget(cellModel),
+                  cell.inputArea.promptNode
+                );
+              }
+            });
           }
         });
       }
