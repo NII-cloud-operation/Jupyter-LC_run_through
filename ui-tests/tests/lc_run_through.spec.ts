@@ -25,7 +25,6 @@ test('should emit an activation console message', async ({ page }) => {
 });
 
 test.use({ autoGoto: true });
-test.setTimeout(120000);
 test('should work run-through button and show summary of outputs in collapsed heading cell', async ({ page }) => {
   // create new notebook
   const fileName = "run_through_test.ipynb";
@@ -113,6 +112,7 @@ test('should work run-through button and show summary of outputs in collapsed he
   expect(output![0]).toContain('unlock test');
 });
 
+test.setTimeout(120000);
 test('should work unfreeze below in section button and unfreeze below all button', async ({ page }) => {
   // create new notebook
   const fileName = "run_through_test.ipynb";
