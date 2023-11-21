@@ -25,6 +25,7 @@ test('should emit an activation console message', async ({ page }) => {
 });
 
 test.use({ autoGoto: true });
+test.setTimeout(120000);
 test('should work run-through button and show summary of outputs in collapsed heading cell', async ({ page }) => {
   // create new notebook
   const fileName = "run_through_test.ipynb";
@@ -136,6 +137,7 @@ test('should work unfreeze below in section button and unfreeze below all button
   // Run
   await page.notebook.run();
   
+  //** Unfreeze section test */
   // Unfreeze and add text all cells
   const allCellIndexes = [1, 2, 3, 5, 6, 7];
   await page.notebook.selectCells(1, 1);
@@ -145,10 +147,9 @@ test('should work unfreeze below in section button and unfreeze below all button
   }
 
   // freeze all cells
-  await delay(1000);
   for(let idx of allCellIndexes) {
     page.notebook.selectCells(idx, idx);
-    await delay(500);
+    await delay(100);
     await page.locator('.run-through-toolbar-button__freeze').click();
   }
 
@@ -169,7 +170,21 @@ test('should work unfreeze below in section button and unfreeze below all button
   expect(output5![0]).not.toContain('add1');
   let output6 = await page.notebook.getCellTextOutput(7);
   expect(output6![0]).not.toContain('add1');
-  await delay(1000);
+
+  //** Unfreeze all test */
+  // Unfreeze and add text all cells
+  await page.notebook.selectCells(1, 1);
+  await page.locator('.run-through-toolbar-button__unfreeze-all').click();
+  for(let idx of allCellIndexes) {
+    await page.notebook.setCell(idx, 'code', 'print("add2")\n');
+  }
+
+  // freeze all cells
+  for(let idx of allCellIndexes) {
+    page.notebook.selectCells(idx, idx);
+    await delay(100);
+    await page.locator('.run-through-toolbar-button__freeze').click();
+  }
 
   // Unfreeze 2nd, 3rd, 4th, 5th, 6th codes
   await page.notebook.selectCells(2, 2);
@@ -177,15 +192,15 @@ test('should work unfreeze below in section button and unfreeze below all button
   await page.locator('.run-through-toolbar-button__unfreeze-all').click();
   await page.notebook.runCellByCell();
   let output2_1 = await page.notebook.getCellTextOutput(1);
-  expect(output2_1![0]).not.toContain('add1');
+  expect(output2_1![0]).not.toContain('add2');
   let output2_2 = await page.notebook.getCellTextOutput(2);
-  expect(output2_2![0]).toContain('add1');
+  expect(output2_2![0]).toContain('add2');
   let output2_3 = await page.notebook.getCellTextOutput(3);
-  expect(output2_3![0]).toContain('add1');
+  expect(output2_3![0]).toContain('add2');
   let output2_4 = await page.notebook.getCellTextOutput(5);
-  expect(output2_4![0]).toContain('add1');
+  expect(output2_4![0]).toContain('add2');
   let output2_5 = await page.notebook.getCellTextOutput(6);
-  expect(output2_5![0]).toContain('add1');
+  expect(output2_5![0]).toContain('add2');
   let output2_6 = await page.notebook.getCellTextOutput(7);
-  expect(output2_6![0]).toContain('add1');
+  expect(output2_6![0]).toContain('add2');
 });
