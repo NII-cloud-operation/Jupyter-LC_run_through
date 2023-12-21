@@ -11,10 +11,6 @@ lc_run_through/labextension
 # Version file is handled by hatchling
 lc_run_through/_version.py
 
-# Integration tests
-ui-tests/test-results/
-ui-tests/playwright-report/
-
 # Created by https://www.gitignore.io/api/python
 # Edit at https://www.gitignore.io/?templates=python
 
