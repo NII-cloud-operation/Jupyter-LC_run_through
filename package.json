@@ -7,9 +7,9 @@
     "jupyterlab",
     "jupyterlab-extension"
   ],
-  "homepage": "https://github.com/entap/lc_run_through",
+  "homepage": "https://github.com/NII-cloud-operation/Jupyter-LC_run_through",
   "bugs": {
-    "url": "https://github.com/entap/lc_run_through/issues"
+    "url": "https://github.com/NII-cloud-operation/Jupyter-LC_run_through/issues"
   },
   "license": "BSD-3-Clause",
   "author": {
@@ -27,7 +27,7 @@
   "style": "style/index.css",
   "repository": {
     "type": "git",
-    "url": "https://github.com/entap/lc_run_through.git"
+    "url": "https://github.com/NII-cloud-operation/Jupyter-LC_run_through.git"
   },
   "workspaces": [
     "ui-tests"
