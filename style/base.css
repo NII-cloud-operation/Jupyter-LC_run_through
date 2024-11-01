@@ -21,8 +21,10 @@
 }
 
 .RunThrough-FrozenWidget {
-  /* TODO: floatしてもexecutionCountが2桁になると横幅が足りなくて回り込んでしまう */
-  float: left;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 4px;
 }
 
 .run-through-section-cells {
@@ -84,6 +86,8 @@
 .run-through-toolbar-button__unfreeze-section::after {
   color: #888;
   content: '\f050';
+  vertical-align: sub;
+  margin-left: -4px;
 }
 
 .run-through-toolbar-button__unfreeze-section .fa-snowflake {
@@ -93,6 +97,8 @@
 .run-through-toolbar-button__unfreeze-all::after {
   color: #888;
   content: '\f04e';
+  vertical-align: sub;
+  margin-left: -4px;
 }
 
 .run-through-toolbar-button__unfreeze-all .fa-snowflake {

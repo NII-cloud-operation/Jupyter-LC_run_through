@@ -32,21 +32,20 @@ export class CellExtension
           if (cell) {
             // 実行時にinputAreaが再生成されてWidgetが消えるので改めて追加する
             cell.model.stateChanged.connect((_, args) => {
-              if (args.name === 'executionCount' && cell.inputArea) {
-                Widget.attach(
-                  new FrozenWidget(cellModel),
-                  cell.inputArea.promptNode
-                );
+              if (
+                args.name !== 'executionState' &&
+                args.name !== 'executionCount'
+              ) {
+                return;
               }
+              this.attachWidgetFor(cell, cellModel);
             });
             // 最初はinputAreaが存在していないのでattachされてから追加する
             cell.inViewportChanged.connect((_, isAttached) => {
-              if (isAttached && cell.inputArea) {
-                Widget.attach(
-                  new FrozenWidget(cellModel),
-                  cell.inputArea.promptNode
-                );
+              if (!isAttached) {
+                return;
               }
+              this.attachWidgetFor(cell, cellModel);
             });
           }
         });
@@ -57,6 +56,19 @@ export class CellExtension
         );
       }
     });
+  }
+
+  attachWidgetFor(cell: Cell<ICellModel>, cellModel: ICellModel) {
+    const target = cell.inputArea?.promptNode;
+    if (!target) {
+      console.warn('Prompt nodes not found', cell.id);
+      return;
+    }
+    // Check if the widget is already attached
+    if (target.querySelector('.RunThrough-FrozenWidget')) {
+      return;
+    }
+    Widget.attach(new FrozenWidget(cellModel), target);
   }
 }
 
