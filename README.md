@@ -2,6 +2,8 @@
 
 # Jupyter-LC_run_through
 
+[![Release](https://github.com/NII-cloud-operation/Jupyter-LC_run_through/actions/workflows/release.yml/badge.svg)](https://github.com/NII-cloud-operation/Jupyter-LC_run_through/actions/workflows/release.yml) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/NII-cloud-operation/Jupyter-LC_run_through/feature/lab?urlpath=lab)
+
 This extension enables to execute cells contained in a collapsed heading section
 with one click, and view a summary of hidden outputs.
 
