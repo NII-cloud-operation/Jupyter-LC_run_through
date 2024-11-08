@@ -44,7 +44,12 @@ jobs:
           yarn-
 
     - name: Install dependencies
-      run: python -m pip install -U 'jupyterlab>=4.0.0,<5'
+      run: |
+        set -eux
+        python -m pip install -U 'jupyterlab>=4.0.0,<5' \
+          git+https://github.com/NII-cloud-operation/Jupyter-multi_outputs.git@feature/lab
+        jupyter labextension enable lc_multi_outputs
+
     - name: Build the extension
       run: |
         set -eux
@@ -71,12 +76,12 @@ jobs:
         npm pack
         mv lc_run_through-*.tgz myextension-nodejs.tgz
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: myextension-sdist
         path: myextension.tar.gz
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: myextension-nodejs
         path: myextension-nodejs.tgz
@@ -88,10 +93,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
         name: myextension-sdist
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
         name: myextension-nodejs
     - name: release

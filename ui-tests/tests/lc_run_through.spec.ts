@@ -148,7 +148,7 @@ test('should work unfreeze below in section button and unfreeze below all button
 
   // freeze all cells
   for(let idx of allCellIndexes) {
-    page.notebook.selectCells(idx, idx);
+    await page.notebook.selectCells(idx, idx);
     await delay(100);
     await page.locator('.run-through-toolbar-button__freeze').click();
   }
@@ -181,7 +181,7 @@ test('should work unfreeze below in section button and unfreeze below all button
 
   // freeze all cells
   for(let idx of allCellIndexes) {
-    page.notebook.selectCells(idx, idx);
+    await page.notebook.selectCells(idx, idx);
     await delay(100);
     await page.locator('.run-through-toolbar-button__freeze').click();
   }
