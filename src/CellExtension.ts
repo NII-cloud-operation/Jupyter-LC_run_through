@@ -12,11 +12,14 @@ import {
   MarkdownCellModel,
   ICellModel,
   MarkdownCell,
-  Cell
+  Cell,
+  isCodeCellModel,
+  CodeCellModel
 } from '@jupyterlab/cells';
 import { Widget } from '@lumino/widgets';
 import { SectionSummaryWidget } from './SectionSummaryWidget';
 import { FrozenWidget } from './FrozenWidget';
+import { getCellState, setCellState } from './cell-state-utils';
 
 export class CellExtension
   implements DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>
@@ -83,6 +86,8 @@ function onCellAdded(
       notebook,
       sessionContext
     );
+  } else if (isCodeCellModel(cellModel)) {
+    onCodeCellAdded(cellModel as CodeCellModel, notebook, sessionContext);
   }
 }
 
@@ -127,6 +132,21 @@ function onMarkdownCellAdded(
       }
     });
   }
+}
+
+function onCodeCellAdded(
+  cell: CodeCellModel,
+  notebook: Notebook,
+  sessionContext: ISessionContext
+) {
+  const state = getCellState(cell);
+  if (!state.frozen && !state.read_only) {
+    return;
+  }
+  setCellState(cell, {
+    frozen: false,
+    read_only: false
+  });
 }
 
 function getCellFromModel(

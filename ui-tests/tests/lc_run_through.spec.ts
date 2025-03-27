@@ -144,6 +144,8 @@ test('should work unfreeze below in section button and unfreeze below all button
   await page.locator('.run-through-toolbar-button__unfreeze-all').click();
   for(let idx of allCellIndexes) {
     await page.notebook.setCell(idx, 'code', 'print("add1")\n');
+    const locator = (await page.notebook.getCellLocator(idx))!.locator('span.fa-snowflake');
+    await expect(locator).not.toBeVisible();
   }
 
   // freeze all cells
@@ -151,7 +153,27 @@ test('should work unfreeze below in section button and unfreeze below all button
     await page.notebook.selectCells(idx, idx);
     await delay(100);
     await page.locator('.run-through-toolbar-button__freeze').click();
+    const locator = (await page.notebook.getCellLocator(idx))!.locator('span.fa-snowflake');
+    await expect(locator).toBeVisible();
   }
+
+  // copy 6th code and paste as 7th code
+  await page.notebook.selectCells(7, 7);
+  await page.locator('jp-button[data-command="notebook:copy-cell"]').click();
+  await page.locator('jp-button[data-command="notebook:paste-cell-below"]').click();
+  let locator = (await page.notebook.getCellLocator(7))!.locator('span.fa-snowflake');
+  await expect(locator).toBeVisible();
+  locator = (await page.notebook.getCellLocator(8))!.locator('span.fa-snowflake');
+  await expect(locator).not.toBeVisible();
+
+  // copy 7th code and paste as 8th code
+  await page.notebook.selectCells(8, 8);
+  await page.locator('jp-button[data-command="notebook:copy-cell"]').click();
+  await page.locator('jp-button[data-command="notebook:paste-cell-below"]').click();
+  locator = (await page.notebook.getCellLocator(8))!.locator('span.fa-snowflake');
+  await expect(locator).not.toBeVisible();
+  locator = (await page.notebook.getCellLocator(9))!.locator('span.fa-snowflake');
+  await expect(locator).not.toBeVisible();
 
   // Unfreeze 2nd, 3rd codes
   await page.notebook.selectCells(2, 2);
