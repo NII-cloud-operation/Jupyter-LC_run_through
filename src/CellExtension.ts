@@ -24,10 +24,19 @@ import { getCellState, setCellState } from './cell-state-utils';
 export class CellExtension
   implements DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>
 {
+  private isNotebookRevealed = false;
+
   createNew(
     widget: NotebookPanel,
     context: DocumentRegistry.IContext<INotebookModel>
   ): void | IDisposable {
+    void widget.revealed.then(() => {
+      if (widget.isDisposed) {
+        return;
+      }
+      console.log('NotebookPanel revealed and ready');
+      this.isNotebookRevealed = true;
+    });
     widget.content.model?.cells.changed.connect((_, args) => {
       if (['add'].includes(args.type)) {
         args.newValues.forEach(cellModel => {
@@ -54,6 +63,11 @@ export class CellExtension
         });
       }
       if (['add', 'set'].includes(args.type)) {
+        if (!this.isNotebookRevealed) {
+          console.log(
+            'NotebookPanel not yet revealed, skipping cell processing'
+          );
+        }
         args.newValues.forEach(c =>
           onCellAdded(c, widget.content, context.sessionContext)
         );
@@ -143,6 +157,10 @@ function onCodeCellAdded(
   if (!state.frozen && !state.read_only) {
     return;
   }
+  console.log(
+    'Unfreeze: Code cell added - automatically unfreezing cell',
+    cell.id
+  );
   setCellState(cell, {
     frozen: false,
     read_only: false
