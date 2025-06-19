@@ -63,14 +63,13 @@ export class CellExtension
         });
       }
       if (['add', 'set'].includes(args.type)) {
-        if (!this.isNotebookRevealed) {
-          console.log(
-            'NotebookPanel not yet revealed, skipping cell processing'
-          );
-          return;
-        }
         args.newValues.forEach(c =>
-          onCellAdded(c, widget.content, context.sessionContext)
+          onCellAdded(
+            c,
+            widget.content,
+            context.sessionContext,
+            this.isNotebookRevealed
+          )
         );
       }
     });
@@ -93,7 +92,8 @@ export class CellExtension
 function onCellAdded(
   cellModel: ICellModel,
   notebook: Notebook,
-  sessionContext: ISessionContext
+  sessionContext: ISessionContext,
+  isNotebookRevealed: boolean
 ) {
   if (isMarkdownCellModel(cellModel)) {
     onMarkdownCellAdded(
@@ -102,7 +102,12 @@ function onCellAdded(
       sessionContext
     );
   } else if (isCodeCellModel(cellModel)) {
-    onCodeCellAdded(cellModel as CodeCellModel, notebook, sessionContext);
+    onCodeCellAdded(
+      cellModel as CodeCellModel,
+      notebook,
+      sessionContext,
+      isNotebookRevealed
+    );
   }
 }
 
@@ -152,8 +157,13 @@ function onMarkdownCellAdded(
 function onCodeCellAdded(
   cell: CodeCellModel,
   notebook: Notebook,
-  sessionContext: ISessionContext
+  sessionContext: ISessionContext,
+  isNotebookRevealed: boolean
 ) {
+  if (!isNotebookRevealed) {
+    console.log('NotebookPanel not yet revealed, skipping cell processing');
+    return;
+  }
   const state = getCellState(cell);
   if (!state.frozen && !state.read_only) {
     return;
