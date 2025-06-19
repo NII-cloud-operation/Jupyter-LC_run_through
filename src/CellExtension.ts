@@ -67,6 +67,7 @@ export class CellExtension
           console.log(
             'NotebookPanel not yet revealed, skipping cell processing'
           );
+          return;
         }
         args.newValues.forEach(c =>
           onCellAdded(c, widget.content, context.sessionContext)
