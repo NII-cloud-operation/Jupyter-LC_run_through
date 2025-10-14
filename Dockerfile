@@ -2,6 +2,11 @@ FROM quay.io/jupyter/scipy-notebook:latest
 
 USER root
 
+### instaill Node.js v20.x because Node.js is not installed with quay.io/jupyter/scipy-notebook
+RUN apt-get update && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+  && apt-get install -y nodejs \
+  && npm install -g yarn
+
 ### extensions for jupyter
 COPY . /tmp/run_through
 RUN pip --no-cache-dir install jupyter_nbextensions_configurator \
