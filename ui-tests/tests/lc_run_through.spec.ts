@@ -24,12 +24,20 @@ test('should emit an activation console message', async ({ page }) => {
   ).toHaveLength(1);
 });
 
+async function waitForNotebookReady(page: any) {
+  // Wait for notebook to be active
+  await page.waitForSelector('.jp-Notebook.jp-mod-commandMode, .jp-Notebook.jp-mod-editMode', { timeout: 10000 });
+  // Wait a bit for any pending operations
+  await page.waitForTimeout(300);
+}
+
 test.use({ autoGoto: true });
 test('should work run-through button and show summary of outputs in collapsed heading cell', async ({ page }) => {
   // create new notebook
   const fileName = "run_through_test.ipynb";
   await page.notebook.createNew(fileName);
   await page.waitForSelector(`[role="main"] >> text=${fileName}`);
+  await waitForNotebookReady(page);
   // caption
   await page.notebook.setCell(0, 'markdown', '# Run through');
   // 1st code
@@ -118,6 +126,7 @@ test('should work unfreeze below in section button and unfreeze below all button
   const fileName = "run_through_test.ipynb";
   await page.notebook.createNew(fileName);
   await page.waitForSelector(`[role="main"] >> text=${fileName}`);
+  await waitForNotebookReady(page);
   // caption
   await page.notebook.setCell(0, 'markdown', '# Section1');
   // 1st code
@@ -233,6 +242,7 @@ test('should detect nested heading levels correctly', async ({ page }) => {
   const fileName = "nested_heading_test.ipynb";
   await page.notebook.createNew(fileName);
   await page.waitForSelector(`[role="main"] >> text=${fileName}`);
+  await waitForNotebookReady(page);
 
   // Create nested heading structure
   // # Level 1
@@ -299,6 +309,7 @@ test('should handle consecutive empty sections and last section with content', a
   const fileName = "empty_sections_test.ipynb";
   await page.notebook.createNew(fileName);
   await page.waitForSelector(`[role="main"] >> text=${fileName}`);
+  await waitForNotebookReady(page);
 
   // Create 3 empty sections followed by 1 section with content
   await page.notebook.setCell(0, 'markdown', '# Empty Section 1');
@@ -358,6 +369,7 @@ test('should persist frozen state in cell metadata', async ({ page, baseURL, tmp
   const fileName = "metadata_test.ipynb";
   await page.notebook.createNew(fileName);
   await page.waitForSelector(`[role="main"] >> text=${fileName}`);
+  await waitForNotebookReady(page);
 
   // Create cells
   await page.notebook.setCell(0, 'code', 'print("cell 0")');
