@@ -68,6 +68,7 @@ export class CellExtension
             c,
             widget.content,
             context.sessionContext,
+            context.isReady,
             this.isNotebookRevealed
           )
         );
@@ -93,6 +94,7 @@ function onCellAdded(
   cellModel: ICellModel,
   notebook: Notebook,
   sessionContext: ISessionContext,
+  isNotebookReady: boolean,
   isNotebookRevealed: boolean
 ) {
   if (isMarkdownCellModel(cellModel)) {
@@ -106,6 +108,7 @@ function onCellAdded(
       cellModel as CodeCellModel,
       notebook,
       sessionContext,
+      isNotebookReady,
       isNotebookRevealed
     );
   }
@@ -158,10 +161,15 @@ function onCodeCellAdded(
   cell: CodeCellModel,
   notebook: Notebook,
   sessionContext: ISessionContext,
+  isNotebookReady: boolean,
   isNotebookRevealed: boolean
 ) {
   if (!isNotebookRevealed) {
     console.log('NotebookPanel not yet revealed, skipping cell processing');
+    return;
+  }
+  if (!isNotebookReady) {
+    console.debug('Notebook context not yet ready, skipping cell processing');
     return;
   }
   const state = getCellState(cell);
