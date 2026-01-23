@@ -1,19 +1,17 @@
 import { ISessionContext } from '@jupyterlab/apputils';
-import { MarkdownCell, isCodeCellModel, CodeCell } from '@jupyterlab/cells';
-import { Notebook } from '@jupyterlab/notebook';
-import { IExecuteReplyMsg } from '@jupyterlab/services/lib/kernel/messages';
+import { MarkdownCell, isCodeCellModel } from '@jupyterlab/cells';
+import { Notebook, NotebookActions } from '@jupyterlab/notebook';
 import { getSectionCells } from './cell-selection-utils';
 
 export function runSectionCells(
   cell: MarkdownCell,
   notebook: Notebook,
   sessionContext: ISessionContext
-): Promise<(void | IExecuteReplyMsg)[]> {
-  // 順番通りに実行されるか少し不安だけど、試した限りでは問題なかった
-
-  return Promise.all(
-    getSectionCells(cell, notebook)
-      .filter(c => isCodeCellModel(c.model))
-      .map(c => CodeCell.execute(c as CodeCell, sessionContext))
+): Promise<boolean> {
+  // Use NotebookActions.runCells to trigger NotebookActions.executed signal,
+  // which is required for multi_outputs extension compatibility.
+  const cells = getSectionCells(cell, notebook).filter(c =>
+    isCodeCellModel(c.model)
   );
+  return NotebookActions.runCells(notebook, cells, sessionContext);
 }
