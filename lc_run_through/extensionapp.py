@@ -4,16 +4,20 @@ import io
 
 from ._version import __version__
 
-from notebook.nbextensions import (InstallNBExtensionApp, EnableNBExtensionApp,
-    DisableNBExtensionApp)
+from nbclassic.nbextensions import (InstallNBExtensionApp, EnableNBExtensionApp,
+    DisableNBExtensionApp, UninstallNBExtensionApp)
 
+from jupyter_server.extension.serverextension import BaseExtensionApp
 try:
-    from notebook.extensions import BaseExtensionApp
+    from jupyter_server.extension.serverextension import BaseExtensionApp
 except ImportError:
-    from notebook.nbextensions import BaseNBExtensionApp
+    from nbclassic.extensions import BaseNBExtensionApp
     BaseExtensionApp = BaseNBExtensionApp
 
-from notebook import nbextensions
+# from notebook import nbextensions
+from jupyter_server.extension.serverextension import (
+    EnableServerExtensionApp,
+    DisableServerExtensionApp)
 
 from traitlets.config.application import catch_config_error
 from traitlets.config.application import Application
@@ -27,10 +31,10 @@ class ExtensionQuickSetupApp(BaseExtensionApp):
     def start(self):
         self.argv.extend(['--py', 'lc_run_through'])
 
-        install = nbextensions.InstallNBExtensionApp()
+        install = InstallNBExtensionApp()
         install.initialize(self.argv)
         install.start()
-        enable = nbextensions.EnableNBExtensionApp()
+        enable = EnableNBExtensionApp()
         enable.initialize(self.argv)
         enable.start()
 
@@ -38,7 +42,7 @@ class ExtensionQuickSetupApp(BaseExtensionApp):
         self.enable_collapsible_headings()
 
     def enable_collapsible_headings(self):
-        enable = nbextensions.EnableNBExtensionApp()
+        enable = EnableNBExtensionApp()
         enable.initialize(['collapsible_headings/main'])
         enable.start();
 
@@ -52,10 +56,10 @@ class ExtensionQuickRemovalApp(BaseExtensionApp):
     def start(self):
         self.argv.extend(['--py', 'lc_run_through'])
 
-        disable = nbextensions.DisableNBExtensionApp()
+        disable = DisableNBExtensionApp()
         disable.initialize(self.argv)
         disable.start()
-        uninstall = nbextensions.UninstallNBExtensionApp()
+        uninstall = UninstallNBExtensionApp()
         uninstall.initialize(self.argv)
         uninstall.start()
 

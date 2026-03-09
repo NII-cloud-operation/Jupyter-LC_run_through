@@ -1,0 +1,106 @@
+/*
+    See the JupyterLab Developer Guide for useful CSS Patterns:
+
+    https://jupyterlab.readthedocs.io/en/stable/developer/css.html
+*/
+
+.run-through-toolbar-button .jp-Icon {
+  color: var(--jp-ui-font-color1);
+}
+
+.run-through-button {
+  border: 1px solid var(--jp-border-color2);
+  padding: 4px 6px;
+}
+
+.run-through-prompt-frozen {
+  background-color: rgb(100 149 237);
+  color: white;
+  padding: 2px 1px;
+  border-radius: 2px;
+}
+
+.RunThrough-FrozenWidget {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 4px;
+}
+
+.run-through-section-cells {
+  display: flex;
+  align-items: center;
+}
+
+.run-through-code-result {
+  display: inline-block;
+  font-size: 100%;
+  margin: 5px;
+  color: white;
+  border-radius: 3px;
+  width: 1.2em;
+  height: 1.2em;
+  line-height: 1.2em;
+  text-align: center;
+  background: #ccc;
+}
+
+.run-through-code-result__success {
+  background: #85f185;
+}
+
+.run-through-code-result__error {
+  background: #f88;
+}
+
+.run-through-heading-result {
+  margin: 5px;
+  display: inline-block;
+}
+
+.lc-SectionSummaryWidget {
+  margin-top: 12px;
+
+  /* hiddenボタンの位置と揃える */
+  margin-left: calc(var(--jp-cell-prompt-width) + 2 * var(--jp-code-padding));
+}
+
+.run-through-toolbar-button__freeze .fa-snowflake {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: cornflowerblue;
+  color: white;
+  padding: 1px;
+  border-radius: 2px;
+}
+
+.run-through-toolbar-button__unfreeze {
+  color: #888;
+}
+
+.run-through-toolbar-button__unfreeze .fa-snowflake {
+  color: #888;
+}
+
+.run-through-toolbar-button__unfreeze-section::after {
+  color: #888;
+  content: '\f050';
+  vertical-align: sub;
+  margin-left: -4px;
+}
+
+.run-through-toolbar-button__unfreeze-section .fa-snowflake {
+  color: #888;
+}
+
+.run-through-toolbar-button__unfreeze-all::after {
+  color: #888;
+  content: '\f04e';
+  vertical-align: sub;
+  margin-left: -4px;
+}
+
+.run-through-toolbar-button__unfreeze-all .fa-snowflake {
+  color: #888;
+}

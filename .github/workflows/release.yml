@@ -1,0 +1,130 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['*']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install node
+      uses: actions/setup-node@v3
+      with:
+       node-version: 18
+    - name: Install Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+        architecture: 'x64'
+
+
+    - name: Setup pip cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: pip-3.9-${{ hashFiles('package.json') }}
+        restore-keys: |
+          pip-3.9-
+          pip-
+
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - name: Setup yarn cache
+      uses: actions/cache@v4
+      id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          yarn-
+
+    - name: Install dependencies
+      run: |
+        set -eux
+        python -m pip install -U 'jupyterlab>=4.0.0,<5' \
+          git+https://github.com/NII-cloud-operation/Jupyter-multi_outputs.git@feature/lab
+        jupyter labextension enable lc_multi_outputs
+
+    - name: Build the extension
+      run: |
+        set -eux
+        jlpm
+        jlpm run eslint:check
+        python -m pip install .
+
+        jupyter labextension list 2>&1 | grep -ie "lc_run_through.*OK"
+        python -m jupyterlab.browser_check
+
+        jlpm install
+        cd ./ui-tests
+        jlpm install
+        jlpm playwright install
+        jlpm playwright test
+        cd ..
+
+        pip install build
+        python -m build --sdist
+        cp dist/*.tar.gz myextension.tar.gz
+        pip uninstall -y myextension jupyterlab
+        rm -rf myextension
+
+        npm pack
+        mv lc_run_through-*.tgz myextension-nodejs.tgz
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: myextension-sdist
+        path: myextension.tar.gz
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: myextension-nodejs
+        path: myextension-nodejs.tgz
+
+  draft_release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - uses: actions/download-artifact@v4
+      with:
+        name: myextension-sdist
+    - uses: actions/download-artifact@v4
+      with:
+        name: myextension-nodejs
+    - name: release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: true
+        prerelease: false
+        release_name: ${{ github.ref }}
+        tag_name: ${{ github.ref }}
+        body_path: CHANGELOG.md
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: upload pip package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: myextension.tar.gz
+        asset_name: lc_run_through-${{ github.ref_name }}.tar.gz
+        asset_content_type: application/gzip
+    - name: upload nodejs package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: myextension-nodejs.tgz
+        asset_name: lc_run_through-${{ github.ref_name }}.tgz
+        asset_content_type: application/gzip
