@@ -60,7 +60,7 @@ test('should work run-through button and show summary of outputs in collapsed he
   await expect(cells.nth(1)).toHaveClass(/run-through-code-result__error/);
   // icon3 (Gray)
   await expect(cells.nth(2)).not.toHaveClass(/run-through-code-result__success/);
-  await expect(cells.nth(2)).not.toHaveClass(/run-through-code-code/);
+  await expect(cells.nth(2)).not.toHaveClass(/run-through-code-result__error/);
 
   // click collapse heading button (open)
   await page.hover('.jp-InputArea-prompt');
